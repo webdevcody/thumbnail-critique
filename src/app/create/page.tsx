@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import clsx from "clsx";
 import { useRouter } from "next/navigation";
+import { getImageUrl } from "@/lib/utils";
 
 const defaultErrorState = {
   title: "",
@@ -118,7 +119,7 @@ export default function CreatePage() {
                 width="200"
                 height="200"
                 alt="image test a"
-                src={`${process.env.NEXT_PUBLIC_CONVEX_URL}/api/storage/${imageA}`}
+                src={getImageUrl(imageA)}
               />
             )}
 
@@ -151,7 +152,7 @@ export default function CreatePage() {
                   width="200"
                   height="200"
                   alt="image test b"
-                  src={`${process.env.NEXT_PUBLIC_CONVEX_URL}/api/storage/${imageB}`}
+                  src={getImageUrl(imageB)}
                 />
               )}
 
