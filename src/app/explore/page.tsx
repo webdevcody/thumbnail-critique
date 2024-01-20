@@ -42,7 +42,7 @@ export default function ExplorePage() {
       <h1 className="text-center text-4xl font-bold mb-12">Community Review</h1>
 
       {isLoading && (
-        <div className="animate-pulse mb-12 mt-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+        <div className="animate-pulse mb-12 mt-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 pb-40">
           <SkeletonCard />
           <SkeletonCard />
           <SkeletonCard />
@@ -104,7 +104,7 @@ export default function ExplorePage() {
         </div>
       )}
 
-      {thumbnails.length === 0 && (
+      {!isLoading && thumbnails.length === 0 && (
         <div className="flex flex-col items-center gap-8">
           <Image
             className="rounded-lg bg-white p-12"

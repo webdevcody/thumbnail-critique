@@ -2,7 +2,7 @@ import { Card, CardContent, CardFooter, CardHeader } from "./ui/card";
 
 export function SkeletonCard() {
   return (
-    <Card className="h-[200px]">
+    <Card>
       <CardHeader>
         <div className="h-32 bg-gray-200 rounded dark:bg-gray-700 mb-2.5"></div>
       </CardHeader>
