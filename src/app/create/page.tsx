@@ -133,8 +133,8 @@ export default function CreatePage() {
 
             {imageA && (
               <Image
-                width="200"
-                height="200"
+                width="600"
+                height="800"
                 alt="image test a"
                 src={getImageUrl(imageA)}
               />
@@ -166,8 +166,8 @@ export default function CreatePage() {
 
               {imageB && (
                 <Image
-                  width="200"
-                  height="200"
+                  width="600"
+                  height="800"
                   alt="image test b"
                   src={getImageUrl(imageB)}
                 />

@@ -107,8 +107,8 @@ export default function ExplorePage() {
       {thumbnails.length === 0 && (
         <div className="flex flex-col items-center gap-8">
           <Image
-            className="rounded-lg"
-            src="/void.png"
+            className="rounded-lg bg-white p-12"
+            src="/void.svg"
             alt="no found icon"
             width="400"
             height="400"
