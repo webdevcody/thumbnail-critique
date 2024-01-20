@@ -94,7 +94,7 @@ export const getThumbnail = query({
     const isSubscribed = await isUserSubscribed(ctx);
 
     let comments =
-      thumbnail.comments.length === 0 ? [] : [thumbnail.comments.shift()!];
+      thumbnail.comments.length === 0 ? [] : [thumbnail.comments[0]];
 
     if (isSubscribed) {
       comments = thumbnail.comments;
