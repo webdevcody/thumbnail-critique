@@ -49,6 +49,19 @@ export default function ExplorePage() {
         </div>
       )}
 
+      {!isLoading && thumbnails.length === 0 && (
+        <div className="flex flex-col items-center gap-8">
+          <Image
+            className="rounded-lg bg-white p-12"
+            src="/void.svg"
+            alt="no found icon"
+            width="400"
+            height="400"
+          />
+          <div className="text-2xl font-bold">No thumbnails to display</div>
+        </div>
+      )}
+
       {thumbnails.length > 0 && (
         <div className="mb-12 mt-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
           {thumbnails.map((thumbnail) => {
@@ -101,19 +114,6 @@ export default function ExplorePage() {
               </Card>
             );
           })}
-        </div>
-      )}
-
-      {!isLoading && thumbnails.length === 0 && (
-        <div className="flex flex-col items-center gap-8">
-          <Image
-            className="rounded-lg bg-white p-12"
-            src="/void.svg"
-            alt="no found icon"
-            width="400"
-            height="400"
-          />
-          <div className="text-2xl font-bold">No thumbnails to display</div>
         </div>
       )}
 
