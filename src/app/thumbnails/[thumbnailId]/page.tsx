@@ -3,7 +3,7 @@
 import { useMutation, useQuery } from "convex/react";
 import { useParams } from "next/navigation";
 import { api } from "../../../../convex/_generated/api";
-import { Id } from "../../../../convex/_generated/dataModel";
+import { Doc, Id } from "../../../../convex/_generated/dataModel";
 import Image from "next/image";
 import { getImageUrl } from "@/lib/utils";
 import { shuffle } from "lodash";
@@ -12,11 +12,92 @@ import { useSession } from "@clerk/nextjs";
 import { Progress } from "@/components/ui/progress";
 import { useRef } from "react";
 import { Comments } from "./comments";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { formatDistance } from "date-fns";
+import { CheckCircleIcon, DotIcon } from "lucide-react";
+
+function getVotesFor(thumbnail: Doc<"thumbnails">, imageId: string) {
+  if (!thumbnail) return 0;
+  return thumbnail.aImage === imageId ? thumbnail.aVotes : thumbnail?.bVotes;
+}
+
+function getVotePercent(thumbnail: Doc<"thumbnails">, imageId: string) {
+  if (!thumbnail) return 0;
+  const totalVotes = thumbnail.aVotes + thumbnail.bVotes;
+  if (totalVotes === 0) return 0;
+  return Math.round((getVotesFor(thumbnail, imageId) / totalVotes) * 100);
+}
+
+function ThumbnailTestImage({
+  imageId,
+  thumbnail,
+  hasVoted,
+}: {
+  imageId: string;
+  thumbnail: Doc<"thumbnails">;
+  hasVoted: boolean;
+}) {
+  const voteOnThumbnail = useMutation(api.thumbnails.voteOnThumbnail);
+
+  return (
+    <div className="flex flex-col gap-4">
+      <Image
+        width="600"
+        height="600"
+        alt="image test a"
+        className="w-full"
+        src={getImageUrl(imageId)}
+      />
+
+      <div className="flex gap-4">
+        <Avatar>
+          <AvatarImage src={thumbnail.profileImage} />
+          <AvatarFallback>CN</AvatarFallback>
+        </Avatar>
+        <div className="flex flex-col text-gray-300">
+          <div className="font-bold mb-2 text-white">{thumbnail.title}</div>
+          <div className="flex gap-2 items-center">
+            {thumbnail.name} <CheckCircleIcon size={12} />
+          </div>
+          <div className="flex">
+            <div>152K Views</div>
+            <DotIcon />
+            {formatDistance(new Date(thumbnail._creationTime), new Date(), {
+              addSuffix: true,
+            })}
+          </div>
+        </div>
+      </div>
+
+      {hasVoted ? (
+        <>
+          <Progress
+            value={getVotePercent(thumbnail, imageId)}
+            className="w-full"
+          />
+          <div className="text-lg">{getVotesFor(thumbnail, imageId)} votes</div>
+        </>
+      ) : (
+        <Button
+          onClick={() => {
+            voteOnThumbnail({
+              thumbnailId: thumbnail._id,
+              imageId: imageId,
+            });
+          }}
+          size="lg"
+          className="w-fit"
+        >
+          Vote A
+        </Button>
+      )}
+    </div>
+  );
+}
 
 export default function ThumbnailPage() {
   const params = useParams<{ thumbnailId: Id<"thumbnails"> }>();
   const thumbnailId = params.thumbnailId;
-  const voteOnThumbnail = useMutation(api.thumbnails.voteOnThumbnail);
   const thumbnail = useQuery(api.thumbnails.getThumbnail, {
     thumbnailId,
   });
@@ -35,94 +116,20 @@ export default function ThumbnailPage() {
 
   const hasVoted = thumbnail.voteIds.includes(session.session.user.id);
 
-  function getVotesFor(imageId: string) {
-    if (!thumbnail) return 0;
-    return thumbnail.aImage === imageId ? thumbnail.aVotes : thumbnail?.bVotes;
-  }
-
-  function geVotePercent(imageId: string) {
-    if (!thumbnail) return 0;
-    const totalVotes = thumbnail.aVotes + thumbnail.bVotes;
-    if (totalVotes === 0) return 0;
-    return Math.round((getVotesFor(imageId) / totalVotes) * 100);
-  }
-
   return (
-    <div className="mt-16">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="flex items-center flex-col gap-4">
-          <h2 className="text-2xl md:text-4xl font-bold text-center mb-4">
-            Test Image A
-          </h2>
+    <div className="mt-16 gap-12 flex flex-col">
+      <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
+        <ThumbnailTestImage
+          hasVoted={hasVoted}
+          imageId={firstImageId}
+          thumbnail={thumbnail}
+        />
 
-          <Image
-            width="600"
-            height="600"
-            alt="image test a"
-            className="w-full"
-            src={getImageUrl(firstImageId)}
-          />
-
-          {hasVoted ? (
-            <>
-              <Progress
-                value={geVotePercent(firstImageId)}
-                className="w-full"
-              />
-              <div className="text-lg">{getVotesFor(firstImageId)} votes</div>
-            </>
-          ) : (
-            <Button
-              onClick={() => {
-                voteOnThumbnail({
-                  thumbnailId,
-                  imageId: firstImageId,
-                });
-              }}
-              size="lg"
-              className="w-fit"
-            >
-              Vote A
-            </Button>
-          )}
-        </div>
-
-        <div className="flex items-center flex-col gap-4">
-          <h2 className="text-2xl md:text-4xl font-bold text-center mb-4">
-            Test Image B
-          </h2>
-
-          <Image
-            width="600"
-            height="600"
-            alt="image test b"
-            className="w-full"
-            src={getImageUrl(secondImageId)}
-          />
-
-          {hasVoted ? (
-            <>
-              <Progress
-                value={geVotePercent(secondImageId)}
-                className="w-full"
-              />
-              <div className="text-lg">{getVotesFor(secondImageId)} votes</div>
-            </>
-          ) : (
-            <Button
-              onClick={() => {
-                voteOnThumbnail({
-                  thumbnailId,
-                  imageId: secondImageId,
-                });
-              }}
-              size="lg"
-              className="w-fit"
-            >
-              Vote B
-            </Button>
-          )}
-        </div>
+        <ThumbnailTestImage
+          hasVoted={hasVoted}
+          imageId={secondImageId}
+          thumbnail={thumbnail}
+        />
       </div>
 
       <Comments thumbnail={thumbnail} />

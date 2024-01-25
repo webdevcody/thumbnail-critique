@@ -91,19 +91,7 @@ export const getThumbnail = query({
       return null;
     }
 
-    const isSubscribed = await isUserSubscribed(ctx);
-
-    let comments =
-      thumbnail.comments.length === 0 ? [] : [thumbnail.comments[0]];
-
-    if (isSubscribed) {
-      comments = thumbnail.comments;
-    }
-
-    return {
-      ...thumbnail,
-      comments,
-    };
+    return thumbnail;
   },
 });
 

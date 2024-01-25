@@ -28,7 +28,6 @@ const formSchema = z.object({
 });
 
 export function Comments({ thumbnail }: { thumbnail: Doc<"thumbnails"> }) {
-  const isSubscriped = useIsSubscribed();
   const addComment = useMutation(api.thumbnails.addComment);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -65,33 +64,10 @@ export function Comments({ thumbnail }: { thumbnail: Doc<"thumbnails"> }) {
 
   return (
     <div>
-      <h2 className="my-8 text-4xl font-bold text-center">Comments</h2>
+      <h2 className="mb-4 text-4xl font-bold text-center">Comments</h2>
 
-      <div className="max-w-lg mx-auto mb-24">
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            <FormField
-              control={form.control}
-              name="text"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Your Comment</FormLabel>
-                  <FormControl>
-                    <Textarea {...field} />
-                  </FormControl>
-                  <FormDescription>
-                    leave a comment to help the content creator improve their
-                    thumbnail designs
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <Button type="submit">Post Comment</Button>
-          </form>
-        </Form>
-
-        <div className="space-y-8 mt-12">
+      <div className="max-w-4xl mx-auto mb-12 space-y-8">
+        <div className="space-y-2">
           {thumbnail.comments?.map((comment) => {
             return (
               <div
@@ -116,16 +92,30 @@ export function Comments({ thumbnail }: { thumbnail: Doc<"thumbnails"> }) {
               </div>
             );
           })}
-
-          {!isSubscriped && (
-            <div className="border p-8 rounded text-center space-y-4">
-              <div>
-                You must upgrade to view all the feedback users left for you
-              </div>
-              <UpgradeButton />
-            </div>
-          )}
         </div>
+
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <FormField
+              control={form.control}
+              name="text"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Your Comment</FormLabel>
+                  <FormControl>
+                    <Textarea {...field} />
+                  </FormControl>
+                  <FormDescription>
+                    leave a comment to help the content creator improve their
+                    thumbnail designs
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button type="submit">Post Comment</Button>
+          </form>
+        </Form>
       </div>
     </div>
   );
