@@ -55,7 +55,7 @@ export function Header() {
             <>
               {isAuthenticated && (
                 <>
-                  {!isSubscriped && <UpgradeButton />}
+                  {/* {!isSubscriped && <UpgradeButton />} */}
                   <UserButton />
                 </>
               )}

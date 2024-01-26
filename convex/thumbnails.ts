@@ -18,7 +18,7 @@ export const createThumbnail = mutation({
       throw new Error("you must be logged in to create a thumbnail");
     }
 
-    const isSubscribed = await isUserSubscribed(ctx);
+    // const isSubscribed = await isUserSubscribed(ctx);
 
     const user = await getFullUser(ctx, userId);
 
@@ -26,13 +26,13 @@ export const createThumbnail = mutation({
       throw new Error("no user with that id found");
     }
 
-    if (!isSubscribed && user.credits <= 0) {
-      throw new Error("you must be subscribed to create a thumbnail");
-    }
+    // if (!isSubscribed && user.credits <= 0) {
+    //   throw new Error("you must be subscribed to create a thumbnail");
+    // }
 
-    await ctx.db.patch(user._id, {
-      credits: Math.max(0, user.credits - 1),
-    });
+    // await ctx.db.patch(user._id, {
+    //   credits: Math.max(0, user.credits - 1),
+    // });
 
     return await ctx.db.insert("thumbnails", {
       title: args.title,

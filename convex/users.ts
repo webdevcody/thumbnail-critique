@@ -36,15 +36,16 @@ export const getProfile = query({
 });
 
 export const isUserSubscribed = async (ctx: QueryCtx | MutationCtx) => {
-  const userId = await getUserId(ctx);
+  return true;
+  // const userId = await getUserId(ctx);
 
-  if (!userId) {
-    return false;
-  }
+  // if (!userId) {
+  //   return false;
+  // }
 
-  const userToCheck = await getFullUser(ctx, userId);
+  // const userToCheck = await getFullUser(ctx, userId);
 
-  return (userToCheck?.endsOn ?? 0) > Date.now();
+  // return (userToCheck?.endsOn ?? 0) > Date.now();
 };
 
 export const createUser = internalMutation({
