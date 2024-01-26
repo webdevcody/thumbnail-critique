@@ -17,7 +17,7 @@ import { api } from "../../../../convex/_generated/api";
 import { useParams } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-export function UserThumbnails() {
+function UserThumbnails() {
   const params = useParams<{ userId: string }>();
   const thumbnails = useQuery(api.thumbnails.getThumbnailsForUser, {
     userId: params.userId,
