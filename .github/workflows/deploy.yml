@@ -18,4 +18,6 @@ jobs:
         run: npm i
 
       - name: Deploy with Convex
+        env:
+          CONVEX_DEPLOY_KEY: ${{ secrets.CONVEX_DEPLOY_KEY }}
         run: npx convex deploy
