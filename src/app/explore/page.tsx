@@ -6,7 +6,12 @@ import {
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
-import { usePaginatedQuery } from "convex/react";
+import {
+  useConvexAuth,
+  useMutation,
+  usePaginatedQuery,
+  useQuery,
+} from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
@@ -17,6 +22,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Doc } from "../../../convex/_generated/dataModel";
 import { useSession } from "@clerk/nextjs";
 import { SkeletonCard } from "@/components/skeleton-card";
+import { DeleteIcon, TrashIcon } from "lucide-react";
 
 export default function ExplorePage() {
   const {
@@ -31,11 +37,19 @@ export default function ExplorePage() {
   );
 
   const session = useSession();
+  const { isAuthenticated } = useConvexAuth();
+
+  const user = useQuery(
+    api.users.getMyUser,
+    !isAuthenticated ? "skip" : undefined
+  );
 
   function hasVoted(thumbnail: Doc<"thumbnails">) {
     if (!session.session) return false;
     return thumbnail.voteIds.includes(session.session?.user.id);
   }
+
+  const deleteThumbail = useMutation(api.thumbnails.deleteThumbnail);
 
   return (
     <div className="pt-12">
@@ -67,7 +81,19 @@ export default function ExplorePage() {
           {thumbnails.map((thumbnail) => {
             return (
               <Card key={thumbnail._id}>
-                <CardHeader>
+                <CardHeader className="relative">
+                  {user?.isAdmin && (
+                    <Button
+                      onClick={() => {
+                        deleteThumbail({
+                          thumbnailId: thumbnail._id,
+                        });
+                      }}
+                      className="absolute right-2 top-2"
+                    >
+                      <TrashIcon />
+                    </Button>
+                  )}
                   <Image
                     src={getImageUrl(thumbnail.aImage)}
                     width="600"

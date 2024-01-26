@@ -29,6 +29,7 @@ export default defineSchema({
     endsOn: v.optional(v.number()),
     credits: v.number(),
     name: v.optional(v.string()),
+    isAdmin: v.optional(v.boolean()),
     profileImage: v.optional(v.string()),
   })
     .index("by_userId", ["userId"])

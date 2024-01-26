@@ -2,7 +2,7 @@ import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { paginationOptsValidator } from "convex/server";
 import { getFullUser, isUserSubscribed } from "./users";
-import { getUser, getUserId } from "./util";
+import { getUser, getUserById, getUserId } from "./util";
 
 export const createThumbnail = mutation({
   args: {
@@ -156,5 +156,28 @@ export const voteOnThumbnail = mutation({
         voteIds: [...thumbnail.voteIds, userId],
       });
     }
+  },
+});
+
+export const deleteThumbnail = mutation({
+  args: { thumbnailId: v.id("thumbnails") },
+  async handler(ctx, args) {
+    const userId = await getUserId(ctx);
+
+    if (!userId) {
+      throw new Error("you must be logged in to vote");
+    }
+
+    const user = await getUserById(ctx, userId);
+
+    if (!user) {
+      throw new Error("user does not exist");
+    }
+
+    if (!user.isAdmin) {
+      throw new Error("you must be an admin");
+    }
+
+    await ctx.db.delete(args.thumbnailId);
   },
 });
