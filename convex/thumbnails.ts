@@ -105,7 +105,7 @@ export const getRecentThumbnails = query({
   },
 });
 
-export const getThumbnailsForUser = query({
+export const getMyThumbnails = query({
   args: {},
   handler: async (ctx, args) => {
     const userId = await getUserId(ctx);
@@ -117,6 +117,16 @@ export const getThumbnailsForUser = query({
     return await ctx.db
       .query("thumbnails")
       .filter((q) => q.eq(q.field("userId"), userId))
+      .collect();
+  },
+});
+
+export const getThumbnailsForUser = query({
+  args: { userId: v.string() },
+  handler: async (ctx, args) => {
+    return await ctx.db
+      .query("thumbnails")
+      .filter((q) => q.eq(q.field("userId"), args.userId))
       .collect();
   },
 });

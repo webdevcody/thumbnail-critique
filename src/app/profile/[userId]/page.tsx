@@ -7,25 +7,26 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import { useQuery } from "convex/react";
-import { api } from "../../../convex/_generated/api";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { getImageUrl } from "@/lib/utils";
 import Link from "next/link";
 import { formatDistance } from "date-fns";
 import { SkeletonCard } from "@/components/skeleton-card";
+import { api } from "../../../../convex/_generated/api";
+import { useParams } from "next/navigation";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-export default function DashboardPage() {
-  const thumbnails = useQuery(api.thumbnails.getMyThumbnails);
+export function UserThumbnails() {
+  const params = useParams<{ userId: string }>();
+  const thumbnails = useQuery(api.thumbnails.getThumbnailsForUser, {
+    userId: params.userId,
+  });
 
   const sortedThumbnails = [...(thumbnails ?? [])].reverse();
 
   return (
-    <div className="pt-12">
-      <h1 className="text-center text-4xl font-bold mb-12">
-        Your Thumbnail Tests
-      </h1>
-
+    <div>
       {thumbnails === undefined && (
         <div className="animate-pulse mb-12 mt-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
           <SkeletonCard />
@@ -86,6 +87,31 @@ export default function DashboardPage() {
             </Card>
           );
         })}
+      </div>
+    </div>
+  );
+}
+
+export default function ProfilePage() {
+  const params = useParams<{ userId: string }>();
+  const profile = useQuery(api.users.getProfile, {
+    userId: params.userId,
+  });
+
+  return (
+    <div className="grid grid-cols-3 mt-12">
+      <div className="flex flex-col gap-2 items-center">
+        <Avatar className="w-40 h-40">
+          <AvatarImage src={profile?.profileImage} />
+          <AvatarFallback>CN</AvatarFallback>
+        </Avatar>
+
+        <h1 className="text-2xl">{profile?.name}</h1>
+      </div>
+      <div className="col-span-2">
+        <h1 className="text-4xl font-bold">Thumbnails</h1>
+
+        <UserThumbnails />
       </div>
     </div>
   );

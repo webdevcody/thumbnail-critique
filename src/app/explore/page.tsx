@@ -22,7 +22,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Doc } from "../../../convex/_generated/dataModel";
 import { useSession } from "@clerk/nextjs";
 import { SkeletonCard } from "@/components/skeleton-card";
-import { DeleteIcon, TrashIcon } from "lucide-react";
+import { TrashIcon } from "lucide-react";
 
 export default function ExplorePage() {
   const {
@@ -103,10 +103,12 @@ export default function ExplorePage() {
                 </CardHeader>
                 <CardContent>
                   <div className="flex gap-4 items-center mb-2">
-                    <Avatar>
-                      <AvatarImage src={thumbnail.profileImage} />
-                      <AvatarFallback>CN</AvatarFallback>
-                    </Avatar>
+                    <Link href={`/profile/${thumbnail.userId}`}>
+                      <Avatar>
+                        <AvatarImage src={thumbnail.profileImage} />
+                        <AvatarFallback>CN</AvatarFallback>
+                      </Avatar>
+                    </Link>
 
                     <div>
                       <p>{thumbnail.name}</p>

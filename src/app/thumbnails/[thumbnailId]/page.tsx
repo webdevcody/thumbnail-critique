@@ -15,6 +15,7 @@ import { Comments } from "./comments";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { formatDistance } from "date-fns";
 import { CheckCircleIcon, DotIcon } from "lucide-react";
+import Link from "next/link";
 
 function getVotesFor(thumbnail: Doc<"thumbnails">, imageId: string) {
   if (!thumbnail) return 0;
@@ -50,10 +51,12 @@ function ThumbnailTestImage({
       />
 
       <div className="flex gap-4">
-        <Avatar>
-          <AvatarImage src={thumbnail.profileImage} />
-          <AvatarFallback>CN</AvatarFallback>
-        </Avatar>
+        <Link href={`/profile/${thumbnail.userId}`}>
+          <Avatar>
+            <AvatarImage src={thumbnail.profileImage} />
+            <AvatarFallback>CN</AvatarFallback>
+          </Avatar>
+        </Link>
         <div className="flex flex-col text-gray-300">
           <div className="font-bold mb-2 text-white">{thumbnail.title}</div>
           <div className="flex gap-2 items-center">
@@ -105,6 +108,15 @@ export default function ThumbnailPage() {
 
   const session = useSession();
 
+  const profile = useQuery(
+    api.users.getProfile,
+    thumbnail
+      ? {
+          userId: thumbnail.userId,
+        }
+      : "skip"
+  );
+
   if (!thumbnail || !session.session) {
     return <div>Loading...</div>;
   }
@@ -118,6 +130,18 @@ export default function ThumbnailPage() {
 
   return (
     <div className="mt-16 gap-12 flex flex-col">
+      <Link
+        href={`/profile/${thumbnail.userId}`}
+        className="flex items-center justify-center gap-4"
+      >
+        Uploaded by
+        <Avatar className="w-8 h-8">
+          <AvatarImage src={thumbnail?.profileImage} />
+          <AvatarFallback>CN</AvatarFallback>
+        </Avatar>
+        <h1>{profile?.name}</h1>
+      </Link>
+
       <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
         <ThumbnailTestImage
           hasVoted={hasVoted}

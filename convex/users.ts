@@ -6,7 +6,7 @@ import {
   mutation,
   query,
 } from "./_generated/server";
-import { getUserId } from "./util";
+import { getUserById, getUserId } from "./util";
 
 const FREE_CREDITS = 5;
 
@@ -20,6 +20,18 @@ export const getUser = query({
     }
 
     return getFullUser(ctx, userId);
+  },
+});
+
+export const getProfile = query({
+  args: { userId: v.string() },
+  handler: async (ctx, args) => {
+    const user = await getUserById(ctx, args.userId);
+
+    return {
+      name: user?.name,
+      profileImage: user?.profileImage,
+    };
   },
 });
 
