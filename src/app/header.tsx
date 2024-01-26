@@ -30,6 +30,9 @@ export function Header() {
                   <Link href="/explore" className="link">
                     Explore
                   </Link>
+                  <Link href="/account" className="link">
+                    Account
+                  </Link>
                 </>
               )}
 

@@ -44,6 +44,7 @@ export const createThumbnail = mutation({
       voteIds: [],
       profileImage: args.profileImage,
       comments: [],
+      name: user.name,
     });
   },
 });
@@ -52,7 +53,6 @@ export const addComment = mutation({
   args: { thumbnailId: v.id("thumbnails"), text: v.string() },
   handler: async (ctx, args) => {
     const user = await getUser(ctx);
-    console.log("user", user);
 
     if (!user) {
       throw new Error("you must be logged in to leave a comment");

@@ -28,6 +28,8 @@ export default defineSchema({
     subscriptionId: v.optional(v.string()),
     endsOn: v.optional(v.number()),
     credits: v.number(),
+    name: v.optional(v.string()),
+    profileImage: v.optional(v.string()),
   })
     .index("by_userId", ["userId"])
     .index("by_subscriptionId", ["subscriptionId"]),

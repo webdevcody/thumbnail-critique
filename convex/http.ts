@@ -45,12 +45,24 @@ http.route({
         },
       });
 
+      console.log(result.data);
+
       switch (result.type) {
         case "user.created":
           await ctx.runMutation(internal.users.createUser, {
             email: result.data.email_addresses[0]?.email_address,
             userId: result.data.id,
+            name: `${result.data.first_name} ${result.data.last_name}`,
+            profileImage: result.data.image_url,
           });
+          break;
+        case "user.updated":
+          await ctx.runMutation(internal.users.updateUser, {
+            userId: result.data.id,
+            profileImage: result.data.image_url,
+            name: `${result.data.first_name} ${result.data.last_name}`,
+          });
+          break;
       }
 
       return new Response(null, {

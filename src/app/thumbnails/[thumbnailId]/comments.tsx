@@ -80,11 +80,17 @@ export function Comments({ thumbnail }: { thumbnail: Doc<"thumbnails"> }) {
                     <AvatarFallback>CN</AvatarFallback>
                   </Avatar>
                   <div className="flex flex-col gap-2">
-                    <div>{comment.name}</div>
-                    <div>
-                      {formatDistance(new Date(comment.createdAt), new Date(), {
-                        addSuffix: true,
-                      })}
+                    <div className="flex gap-4 items-center">
+                      <div className="font-bold">{comment.name}</div>
+                      <div className="text-xs">
+                        {formatDistance(
+                          new Date(comment.createdAt),
+                          new Date(),
+                          {
+                            addSuffix: true,
+                          }
+                        )}
+                      </div>
                     </div>
                     <div>{comment.text}</div>
                   </div>
