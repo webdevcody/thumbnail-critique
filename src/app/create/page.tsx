@@ -54,10 +54,10 @@ export default function CreatePage() {
             };
           }
 
-          if (images.length <= 2) {
+          if (images.length < 2) {
             newErrors = {
               ...newErrors,
-              images: "please fill in this required field",
+              images: "you must upload at least 2 thumbnails",
             };
           }
 
