@@ -14,6 +14,7 @@ import { getImageUrl, useSession } from "@/lib/utils";
 import Link from "next/link";
 import { formatDistance } from "date-fns";
 import { SkeletonCard } from "@/components/skeleton-card";
+import { getTotalVotes } from "@/util/getTotalVotes";
 
 export default function DashboardPage() {
   const { isAuthenticated } = useSession();
@@ -61,7 +62,7 @@ export default function DashboardPage() {
             <Card key={thumbnail._id}>
               <CardHeader>
                 <Image
-                  src={getImageUrl(thumbnail.aImage)}
+                  src={getImageUrl(thumbnail.images[0])}
                   width="600"
                   height="600"
                   alt="thumbnail image"
@@ -78,7 +79,7 @@ export default function DashboardPage() {
                     }
                   )}
                 </p>
-                <p>votes: {thumbnail.aVotes + thumbnail.bVotes}</p>
+                <p>votes: {getTotalVotes(thumbnail)}</p>
               </CardContent>
               <CardFooter>
                 <Button className="w-full" asChild>

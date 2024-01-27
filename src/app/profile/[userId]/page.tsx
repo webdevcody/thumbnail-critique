@@ -17,6 +17,7 @@ import { api } from "../../../../convex/_generated/api";
 import { useParams } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Id } from "../../../../convex/_generated/dataModel";
+import { getTotalVotes } from "@/util/getTotalVotes";
 
 function UserThumbnails() {
   const params = useParams<{ userId: string }>();
@@ -59,7 +60,7 @@ function UserThumbnails() {
             <Card key={thumbnail._id}>
               <CardHeader>
                 <Image
-                  src={getImageUrl(thumbnail.aImage)}
+                  src={getImageUrl(thumbnail.images[0])}
                   width="600"
                   height="600"
                   alt="thumbnail image"
@@ -76,7 +77,7 @@ function UserThumbnails() {
                     }
                   )}
                 </p>
-                <p>votes: {thumbnail.aVotes + thumbnail.bVotes}</p>
+                <p>votes: {getTotalVotes(thumbnail)}</p>
               </CardContent>
               <CardFooter>
                 <Button className="w-full" asChild>

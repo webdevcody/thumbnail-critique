@@ -23,6 +23,7 @@ import { Doc } from "../../../convex/_generated/dataModel";
 import { useSession } from "@clerk/nextjs";
 import { SkeletonCard } from "@/components/skeleton-card";
 import { TrashIcon } from "lucide-react";
+import { getTotalVotes } from "@/util/getTotalVotes";
 
 export default function ExplorePage() {
   const {
@@ -95,7 +96,7 @@ export default function ExplorePage() {
                     </Button>
                   )}
                   <Image
-                    src={getImageUrl(thumbnail.aImage)}
+                    src={getImageUrl(thumbnail.images[0])}
                     width="600"
                     height="600"
                     alt="thumbnail image"
@@ -126,7 +127,7 @@ export default function ExplorePage() {
                   </div>
                   <p>{thumbnail.title}</p>
 
-                  <p>votes: {thumbnail.aVotes + thumbnail.bVotes}</p>
+                  <p>votes: {getTotalVotes(thumbnail)}</p>
                 </CardContent>
                 <CardFooter>
                   <Button
