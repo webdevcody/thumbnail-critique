@@ -16,6 +16,7 @@ import { SkeletonCard } from "@/components/skeleton-card";
 import { api } from "../../../../convex/_generated/api";
 import { useParams } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Id } from "../../../../convex/_generated/dataModel";
 
 function UserThumbnails() {
   const params = useParams<{ userId: string }>();
@@ -93,7 +94,7 @@ function UserThumbnails() {
 }
 
 export default function ProfilePage() {
-  const params = useParams<{ userId: string }>();
+  const params = useParams<{ userId: Id<"users"> }>();
   const profile = useQuery(api.users.getProfile, {
     userId: params.userId,
   });

@@ -22,13 +22,24 @@ import { api } from "../../../../convex/_generated/api";
 import { formatDistance } from "date-fns";
 import { useIsSubscribed } from "@/hooks/useIsSubscribed";
 import { UpgradeButton } from "@/components/upgrade-button";
+import { TrashIcon } from "lucide-react";
+import { useSession } from "@/lib/utils";
 
 const formSchema = z.object({
   text: z.string().min(1).max(500),
 });
 
 export function Comments({ thumbnail }: { thumbnail: Doc<"thumbnails"> }) {
+  const { isAuthenticated } = useSession();
   const addComment = useMutation(api.thumbnails.addComment);
+  const adminDeleteComment = useMutation(api.thumbnails.adminDeleteComment);
+  const comments = useQuery(api.thumbnails.getComments, {
+    thumbnailId: thumbnail._id,
+  });
+  const user = useQuery(
+    api.users.getMyUser,
+    !isAuthenticated ? "skip" : undefined
+  );
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -68,12 +79,24 @@ export function Comments({ thumbnail }: { thumbnail: Doc<"thumbnails"> }) {
 
       <div className="max-w-4xl mx-auto mb-12 space-y-8">
         <div className="space-y-2">
-          {thumbnail.comments?.map((comment) => {
+          {comments?.map((comment) => {
             return (
               <div
                 key={`${comment.text}_${comment.createdAt}`}
-                className="border p-4 rounded"
+                className="border p-4 rounded relative"
               >
+                {user?.isAdmin && (
+                  <Button
+                    onClick={() => {
+                      adminDeleteComment({
+                        commentId: comment._id,
+                      });
+                    }}
+                    className="absolute right-2 top-2"
+                  >
+                    <TrashIcon />
+                  </Button>
+                )}
                 <div className="flex gap-4">
                   <Avatar>
                     <AvatarImage src={comment.profileUrl} />

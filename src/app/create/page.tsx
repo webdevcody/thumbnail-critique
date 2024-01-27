@@ -13,24 +13,20 @@ import { useToast } from "@/components/ui/use-toast";
 import clsx from "clsx";
 import { useRouter } from "next/navigation";
 import { getImageUrl } from "@/lib/utils";
-import { useSession } from "@clerk/nextjs";
 import { UpgradeButton } from "@/components/upgrade-button";
 
 const defaultErrorState = {
   title: "",
-  imageA: "",
-  imageB: "",
+  images: "",
 };
 
 export default function CreatePage() {
   const generateUploadUrl = useMutation(api.files.generateUploadUrl);
   const createThumbnail = useMutation(api.thumbnails.createThumbnail);
-  const [imageA, setImageA] = useState("");
-  const [imageB, setImageB] = useState("");
-  const [errors, setErrors] = useState(defaultErrorState);
   const { toast } = useToast();
   const router = useRouter();
-  const session = useSession();
+  const [errors, setErrors] = useState(defaultErrorState);
+  const [images, setImages] = useState<string[]>([]);
 
   return (
     <div className="mt-16">
@@ -58,17 +54,10 @@ export default function CreatePage() {
             };
           }
 
-          if (!imageA) {
+          if (images.length <= 2) {
             newErrors = {
               ...newErrors,
-              imageA: "please fill in this required field",
-            };
-          }
-
-          if (!imageB) {
-            newErrors = {
-              ...newErrors,
-              imageB: "please fill in this required field",
+              images: "please fill in this required field",
             };
           }
 
@@ -86,10 +75,8 @@ export default function CreatePage() {
 
           try {
             const thumbnailId = await createThumbnail({
-              aImage: imageA,
-              bImage: imageB,
+              images,
               title,
-              profileImage: session.session?.user.imageUrl,
             });
 
             router.push(`/thumbnails/${thumbnailId}`);
@@ -122,76 +109,43 @@ export default function CreatePage() {
           {errors.title && <div className="text-red-500">{errors.title}</div>}
         </div>
 
-        <div className="grid grid-cols-2 gap-8 mb-8">
-          <div
-            className={clsx("flex flex-col gap-4 rounded p-2", {
-              border: errors.imageA,
-              "border-red-500": errors.imageA,
-            })}
-          >
-            <h2 className="text-2xl font-bold">Test Image A</h2>
+        <div className="grid grid-cols-3 gap-8 mb-8">
+          {images.map((imageUrl, idx) => {
+            return (
+              <div key={imageUrl} className="flex flex-col">
+                <div>Image {idx + 1}</div>
+                <Image
+                  width="600"
+                  height="800"
+                  alt="image test a"
+                  src={getImageUrl(imageUrl)}
+                />
+              </div>
+            );
+          })}
 
-            {imageA && (
-              <Image
-                width="600"
-                height="800"
-                alt="image test a"
-                src={getImageUrl(imageA)}
-              />
-            )}
-
+          <div className="flex flex-col gap-4 mb-8">
+            <Label htmlFor="title">
+              {images.length > 0 && "Another"} Thumbnail Image
+            </Label>
             <UploadButton
               uploadUrl={generateUploadUrl}
               fileTypes={["image/*"]}
               onUploadComplete={async (uploaded: UploadFileResponse[]) => {
-                setImageA((uploaded[0].response as any).storageId);
+                const storageId = (uploaded[0].response as any).storageId;
+                setImages((imgs) => [...imgs, storageId]);
               }}
               onUploadError={(error: unknown) => {
                 alert(`ERROR! ${error}`);
               }}
             />
-
-            {errors.imageA && (
-              <div className="text-red-500">{errors.imageA}</div>
+            {errors.images && (
+              <div className="text-red-500">{errors.images}</div>
             )}
-          </div>
-          <div className="flex flex-col gap-4">
-            <div
-              className={clsx("flex flex-col gap-4 rounded p-2", {
-                border: errors.imageB,
-                "border-red-500": errors.imageB,
-              })}
-            >
-              <h2 className="text-2xl font-bold">Test Image B</h2>
-
-              {imageB && (
-                <Image
-                  width="600"
-                  height="800"
-                  alt="image test b"
-                  src={getImageUrl(imageB)}
-                />
-              )}
-
-              <UploadButton
-                uploadUrl={generateUploadUrl}
-                fileTypes={["image/*"]}
-                onUploadComplete={async (uploaded: UploadFileResponse[]) => {
-                  setImageB((uploaded[0].response as any).storageId);
-                }}
-                onUploadError={(error: unknown) => {
-                  alert(`ERROR! ${error}`);
-                }}
-              />
-
-              {errors.imageB && (
-                <div className="text-red-500">{errors.imageB}</div>
-              )}
-            </div>
           </div>
         </div>
 
-        <Button>Create Thumbnail Test</Button>
+        <Button>Upload Thumbnail Test</Button>
       </form>
     </div>
   );

@@ -3,30 +3,23 @@ import {
   MutationCtx,
   QueryCtx,
   internalMutation,
-  mutation,
   query,
 } from "./_generated/server";
-import { getUserById, getUserId } from "./util";
+import { authMutation, authQuery } from "./util";
 
 const FREE_CREDITS = 5;
 
-export const getUser = query({
+export const getUser = authQuery({
   args: {},
   handler: async (ctx, args) => {
-    const userId = await getUserId(ctx);
-
-    if (!userId) {
-      return undefined;
-    }
-
-    return getFullUser(ctx, userId);
+    return ctx.user;
   },
 });
 
 export const getProfile = query({
-  args: { userId: v.string() },
+  args: { userId: v.id("users") },
   handler: async (ctx, args) => {
-    const user = await getUserById(ctx, args.userId);
+    const user = await ctx.db.get(args.userId);
 
     return {
       name: user?.name,
@@ -34,19 +27,6 @@ export const getProfile = query({
     };
   },
 });
-
-export const isUserSubscribed = async (ctx: QueryCtx | MutationCtx) => {
-  return true;
-  // const userId = await getUserId(ctx);
-
-  // if (!userId) {
-  //   return false;
-  // }
-
-  // const userToCheck = await getFullUser(ctx, userId);
-
-  // return (userToCheck?.endsOn ?? 0) > Date.now();
-};
 
 export const createUser = internalMutation({
   args: {
@@ -86,9 +66,16 @@ export const updateUser = internalMutation({
 });
 
 export const updateSubscription = internalMutation({
-  args: { subscriptionId: v.string(), userId: v.string(), endsOn: v.number() },
+  args: {
+    subscriptionId: v.string(),
+    userId: v.id("users"),
+    endsOn: v.number(),
+  },
   handler: async (ctx, args) => {
-    const user = await getFullUser(ctx, args.userId);
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_userId", (q) => q.eq("userId", args.userId))
+      .first();
 
     if (!user) {
       throw new Error("no user found with that user id");
@@ -121,42 +108,17 @@ export const updateSubscriptionBySubId = internalMutation({
   },
 });
 
-export function getFullUser(ctx: QueryCtx | MutationCtx, userId: string) {
-  return ctx.db
-    .query("users")
-    .withIndex("by_userId", (q) => q.eq("userId", userId))
-    .first();
-}
-
-export const getMyUser = query({
+export const getMyUser = authQuery({
   args: {},
   async handler(ctx, args) {
-    const userId = await getUserId(ctx);
-
-    if (!userId) {
-      throw new Error("you must be authenticated");
-    }
-
-    return getFullUser(ctx, userId);
+    return ctx.user;
   },
 });
 
-export const updateMyUser = mutation({
+export const updateMyUser = authMutation({
   args: { name: v.string() },
   async handler(ctx, args) {
-    const userId = await getUserId(ctx);
-
-    if (!userId) {
-      throw new Error("you must be authenticated");
-    }
-
-    const user = await getFullUser(ctx, userId);
-
-    if (!user) {
-      throw new Error("user did not exist");
-    }
-
-    await ctx.db.patch(user._id, {
+    await ctx.db.patch(ctx.user._id, {
       name: args.name,
     });
   },

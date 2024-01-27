@@ -4,24 +4,21 @@ import { v } from "convex/values";
 export default defineSchema({
   thumbnails: defineTable({
     title: v.string(),
-    userId: v.string(),
-    aImage: v.string(),
-    aVotes: v.number(),
-    bImage: v.string(),
-    bVotes: v.number(),
+    userId: v.id("users"),
+    images: v.array(v.string()),
+    votes: v.array(v.number()),
     voteIds: v.array(v.string()),
     profileImage: v.optional(v.string()),
     name: v.optional(v.string()),
-    comments: v.array(
-      v.object({
-        userId: v.string(),
-        text: v.string(),
-        createdAt: v.number(),
-        name: v.string(),
-        profileUrl: v.string(),
-      })
-    ),
   }),
+  comments: defineTable({
+    userId: v.id("users"),
+    thumbnailId: v.id("thumbnails"),
+    text: v.string(),
+    createdAt: v.number(),
+    name: v.string(),
+    profileUrl: v.string(),
+  }).index("by_thumbnailnId", ["thumbnailId"]),
   users: defineTable({
     userId: v.string(),
     email: v.string(),

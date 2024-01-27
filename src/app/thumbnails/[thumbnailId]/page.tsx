@@ -6,11 +6,9 @@ import { api } from "../../../../convex/_generated/api";
 import { Doc, Id } from "../../../../convex/_generated/dataModel";
 import Image from "next/image";
 import { getImageUrl } from "@/lib/utils";
-import { shuffle } from "lodash";
 import { Button } from "@/components/ui/button";
 import { useSession } from "@clerk/nextjs";
 import { Progress } from "@/components/ui/progress";
-import { useRef } from "react";
 import { Comments } from "./comments";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { formatDistance } from "date-fns";
@@ -19,12 +17,13 @@ import Link from "next/link";
 
 function getVotesFor(thumbnail: Doc<"thumbnails">, imageId: string) {
   if (!thumbnail) return 0;
-  return thumbnail.aImage === imageId ? thumbnail.aVotes : thumbnail?.bVotes;
+  const idx = thumbnail.images.findIndex((image) => image === imageId);
+  return thumbnail.votes[idx];
 }
 
 function getVotePercent(thumbnail: Doc<"thumbnails">, imageId: string) {
   if (!thumbnail) return 0;
-  const totalVotes = thumbnail.aVotes + thumbnail.bVotes;
+  const totalVotes = thumbnail.votes.reduce((acc, val) => acc + val, 0);
   if (totalVotes === 0) return 0;
   return Math.round((getVotesFor(thumbnail, imageId) / totalVotes) * 100);
 }
@@ -41,7 +40,7 @@ function ThumbnailTestImage({
   const voteOnThumbnail = useMutation(api.thumbnails.voteOnThumbnail);
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 border p-4">
       <Image
         width="600"
         height="600"
@@ -89,9 +88,9 @@ function ThumbnailTestImage({
             });
           }}
           size="lg"
-          className="w-fit"
+          className="w-fit self-center"
         >
-          Vote A
+          Vote
         </Button>
       )}
     </div>
@@ -104,7 +103,6 @@ export default function ThumbnailPage() {
   const thumbnail = useQuery(api.thumbnails.getThumbnail, {
     thumbnailId,
   });
-  const images = useRef<string[] | undefined>(undefined);
 
   const session = useSession();
 
@@ -120,11 +118,6 @@ export default function ThumbnailPage() {
   if (!thumbnail || !session.session) {
     return <div>Loading...</div>;
   }
-
-  if (!images.current) {
-    images.current = shuffle([thumbnail.aImage, thumbnail.bImage]);
-  }
-  const [firstImageId, secondImageId] = images.current;
 
   const hasVoted = thumbnail.voteIds.includes(session.session.user.id);
 
@@ -143,17 +136,16 @@ export default function ThumbnailPage() {
       </Link>
 
       <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
-        <ThumbnailTestImage
-          hasVoted={hasVoted}
-          imageId={firstImageId}
-          thumbnail={thumbnail}
-        />
-
-        <ThumbnailTestImage
-          hasVoted={hasVoted}
-          imageId={secondImageId}
-          thumbnail={thumbnail}
-        />
+        {thumbnail.images.map((imageId) => {
+          return (
+            <ThumbnailTestImage
+              key={imageId}
+              hasVoted={hasVoted}
+              imageId={imageId}
+              thumbnail={thumbnail}
+            />
+          );
+        })}
       </div>
 
       <Comments thumbnail={thumbnail} />

@@ -5,6 +5,7 @@ import Stripe from "stripe";
 
 import { action, internalAction } from "./_generated/server";
 import { internal } from "./_generated/api";
+import { Id } from "./_generated/dataModel";
 
 type Metadata = {
   userId: string;
@@ -66,7 +67,7 @@ export const fulfill = internalAction({
           completedEvent.subscription as string
         );
 
-        const userId = completedEvent.metadata.userId;
+        const userId = completedEvent.metadata.userId as Id<"users">;
 
         await ctx.runMutation(internal.users.updateSubscription, {
           userId,

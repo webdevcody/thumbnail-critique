@@ -1,14 +1,11 @@
 "use client";
 
-import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import { SignInButton, UserButton } from "@clerk/nextjs";
 import { ModeToggle } from "./mode-toggle";
 import Link from "next/link";
-import { useIsSubscribed } from "@/hooks/useIsSubscribed";
-import { UpgradeButton } from "@/components/upgrade-button";
 import { useSession } from "@/lib/utils";
 
 export function Header() {
-  const isSubscriped = useIsSubscribed();
   const { isLoading, isAuthenticated } = useSession();
 
   return (
@@ -36,7 +33,7 @@ export function Header() {
                 </>
               )}
 
-              {!isAuthenticated && (
+              {/* {!isAuthenticated && (
                 <>
                   <Link href="/pricing" className="link">
                     Pricing
@@ -45,7 +42,7 @@ export function Header() {
                     About
                   </Link>
                 </>
-              )}
+              )} */}
             </>
           )}
         </div>

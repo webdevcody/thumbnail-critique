@@ -1,83 +1,54 @@
 import { v } from "convex/values";
-import { mutation, query } from "./_generated/server";
+import { query } from "./_generated/server";
 import { paginationOptsValidator } from "convex/server";
-import { getFullUser, isUserSubscribed } from "./users";
-import { getUser, getUserById, getUserId } from "./util";
+import { adminAuthMutation, authMutation, authQuery } from "./util";
 
-export const createThumbnail = mutation({
+export const createThumbnail = authMutation({
   args: {
     title: v.string(),
-    aImage: v.string(),
-    bImage: v.string(),
-    profileImage: v.optional(v.string()),
+    images: v.array(v.string()),
   },
   handler: async (ctx, args) => {
-    const userId = await getUserId(ctx);
-
-    if (!userId) {
-      throw new Error("you must be logged in to create a thumbnail");
-    }
-
-    // const isSubscribed = await isUserSubscribed(ctx);
-
-    const user = await getFullUser(ctx, userId);
-
-    if (!user) {
-      throw new Error("no user with that id found");
-    }
-
-    // if (!isSubscribed && user.credits <= 0) {
-    //   throw new Error("you must be subscribed to create a thumbnail");
-    // }
-
-    // await ctx.db.patch(user._id, {
-    //   credits: Math.max(0, user.credits - 1),
-    // });
-
     return await ctx.db.insert("thumbnails", {
       title: args.title,
-      userId,
-      aImage: args.aImage,
-      bImage: args.bImage,
-      aVotes: 0,
-      bVotes: 0,
+      userId: ctx.user._id,
+      images: args.images,
+      votes: args.images.map(() => 0),
       voteIds: [],
-      profileImage: args.profileImage,
-      comments: [],
-      name: user.name,
+      profileImage: ctx.user.profileImage,
+      name: ctx.user.name,
     });
   },
 });
 
-export const addComment = mutation({
+export const getComments = query({
+  args: { thumbnailId: v.id("thumbnails") },
+  async handler(ctx, args) {
+    return ctx.db
+      .query("comments")
+      .withIndex("by_thumbnailnId", (q) =>
+        q.eq("thumbnailId", args.thumbnailId)
+      )
+      .collect();
+  },
+});
+
+export const addComment = authMutation({
   args: { thumbnailId: v.id("thumbnails"), text: v.string() },
   handler: async (ctx, args) => {
-    const user = await getUser(ctx);
-
-    if (!user) {
-      throw new Error("you must be logged in to leave a comment");
-    }
-
     const thumbnail = await ctx.db.get(args.thumbnailId);
 
     if (!thumbnail) {
       throw new Error("thumbnail by id did not exist");
     }
 
-    if (!thumbnail.comments) {
-      thumbnail.comments = [];
-    }
-
-    thumbnail.comments.unshift({
+    await ctx.db.insert("comments", {
       createdAt: Date.now(),
       text: args.text,
-      userId: user.subject,
-      name: user.name ?? "Annoymous",
-      profileUrl: user.pictureUrl ?? "",
-    });
-
-    await ctx.db.patch(thumbnail._id, {
-      comments: thumbnail.comments,
+      userId: ctx.user._id,
+      thumbnailId: args.thumbnailId,
+      name: ctx.user.name ?? "Annoymous",
+      profileUrl: ctx.user.profileImage ?? "",
     });
   },
 });
@@ -85,13 +56,7 @@ export const addComment = mutation({
 export const getThumbnail = query({
   args: { thumbnailId: v.id("thumbnails") },
   handler: async (ctx, args) => {
-    const thumbnail = await ctx.db.get(args.thumbnailId);
-
-    if (!thumbnail) {
-      return null;
-    }
-
-    return thumbnail;
+    return await ctx.db.get(args.thumbnailId);
   },
 });
 
@@ -105,18 +70,12 @@ export const getRecentThumbnails = query({
   },
 });
 
-export const getMyThumbnails = query({
+export const getMyThumbnails = authQuery({
   args: {},
   handler: async (ctx, args) => {
-    const userId = await getUserId(ctx);
-
-    if (!userId) {
-      return [];
-    }
-
     return await ctx.db
       .query("thumbnails")
-      .filter((q) => q.eq(q.field("userId"), userId))
+      .filter((q) => q.eq(q.field("userId"), ctx.user._id))
       .collect();
   },
 });
@@ -131,63 +90,40 @@ export const getThumbnailsForUser = query({
   },
 });
 
-export const voteOnThumbnail = mutation({
+export const voteOnThumbnail = authMutation({
   args: {
     thumbnailId: v.id("thumbnails"),
     imageId: v.string(),
   },
   handler: async (ctx, args) => {
-    const userId = await getUserId(ctx);
-
-    if (!userId) {
-      throw new Error("you must be logged in to vote");
-    }
-
     const thumbnail = await ctx.db.get(args.thumbnailId);
 
     if (!thumbnail) {
       throw new Error("invalid thumbnail id");
     }
 
-    if (thumbnail.voteIds.includes(userId)) {
+    if (thumbnail.voteIds.includes(ctx.user._id)) {
       throw new Error("you've already voted");
     }
 
-    if (thumbnail.aImage === args.imageId) {
-      thumbnail.aVotes++;
-      await ctx.db.patch(thumbnail._id, {
-        aVotes: thumbnail.aVotes,
-        voteIds: [...thumbnail.voteIds, userId],
-      });
-    } else {
-      thumbnail.bVotes++;
-      await ctx.db.patch(thumbnail._id, {
-        bVotes: thumbnail.bVotes,
-        voteIds: [...thumbnail.voteIds, userId],
-      });
-    }
+    const voteIdx = thumbnail.images.findIndex((i) => i === args.imageId);
+    thumbnail.votes[voteIdx]++;
+    thumbnail.voteIds.push(ctx.user._id);
+
+    await ctx.db.patch(thumbnail._id, thumbnail);
   },
 });
 
-export const deleteThumbnail = mutation({
+export const deleteThumbnail = adminAuthMutation({
   args: { thumbnailId: v.id("thumbnails") },
   async handler(ctx, args) {
-    const userId = await getUserId(ctx);
-
-    if (!userId) {
-      throw new Error("you must be logged in to vote");
-    }
-
-    const user = await getUserById(ctx, userId);
-
-    if (!user) {
-      throw new Error("user does not exist");
-    }
-
-    if (!user.isAdmin) {
-      throw new Error("you must be an admin");
-    }
-
     await ctx.db.delete(args.thumbnailId);
+  },
+});
+
+export const adminDeleteComment = adminAuthMutation({
+  args: { commentId: v.id("comments") },
+  async handler(ctx, args) {
+    await ctx.db.delete(args.commentId);
   },
 });

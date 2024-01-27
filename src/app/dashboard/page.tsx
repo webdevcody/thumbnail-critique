@@ -10,13 +10,17 @@ import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import { getImageUrl } from "@/lib/utils";
+import { getImageUrl, useSession } from "@/lib/utils";
 import Link from "next/link";
 import { formatDistance } from "date-fns";
 import { SkeletonCard } from "@/components/skeleton-card";
 
 export default function DashboardPage() {
-  const thumbnails = useQuery(api.thumbnails.getMyThumbnails);
+  const { isAuthenticated } = useSession();
+  const thumbnails = useQuery(
+    api.thumbnails.getMyThumbnails,
+    !isAuthenticated ? "skip" : undefined
+  );
 
   const sortedThumbnails = [...(thumbnails ?? [])].reverse();
 
