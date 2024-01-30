@@ -23,8 +23,8 @@ export default function RootLayout({
       <body className={inter.className}>
         <Providers>
           <Header />
-          <div className="container min-h-screen bg-gray-100 dark:bg-black pt-12">
-            {children}
+          <div className="bg-gray-100 dark:bg-black">
+            <div className="container min-h-screen pt-12">{children}</div>
           </div>
           <Footer />
           <Toaster />
