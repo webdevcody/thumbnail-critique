@@ -36,6 +36,13 @@ export const createUser = internalMutation({
     profileImage: v.string(),
   },
   handler: async (ctx, args) => {
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_userId", (q) => q.eq("userId", args.userId))
+      .first();
+
+    if (user) return;
+
     await ctx.db.insert("users", {
       email: args.email,
       userId: args.userId,

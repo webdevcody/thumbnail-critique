@@ -19,6 +19,10 @@ export default defineSchema({
     name: v.string(),
     profileUrl: v.string(),
   }).index("by_thumbnailnId", ["thumbnailId"]),
+  follows: defineTable({
+    userId: v.id("users"),
+    targetUserId: v.id("users"),
+  }).index("by_userId_targetUserId", ["userId", "targetUserId"]),
   users: defineTable({
     userId: v.string(),
     email: v.string(),

@@ -16,6 +16,7 @@ import type {
 } from "convex/server";
 import type * as clerk from "../clerk.js";
 import type * as files from "../files.js";
+import type * as follows from "../follows.js";
 import type * as http from "../http.js";
 import type * as stripe from "../stripe.js";
 import type * as thumbnails from "../thumbnails.js";
@@ -33,6 +34,7 @@ import type * as util from "../util.js";
 declare const fullApi: ApiFromModules<{
   clerk: typeof clerk;
   files: typeof files;
+  follows: typeof follows;
   http: typeof http;
   stripe: typeof stripe;
   thumbnails: typeof thumbnails;

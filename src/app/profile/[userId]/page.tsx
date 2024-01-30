@@ -6,10 +6,10 @@ import {
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
-import { useQuery } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import { getImageUrl } from "@/lib/utils";
+import { getImageUrl, useSession } from "@/lib/utils";
 import Link from "next/link";
 import { formatDistance } from "date-fns";
 import { SkeletonCard } from "@/components/skeleton-card";
@@ -96,9 +96,21 @@ function UserThumbnails() {
 
 export default function ProfilePage() {
   const params = useParams<{ userId: Id<"users"> }>();
+  const { isAuthenticated } = useSession();
+
   const profile = useQuery(api.users.getProfile, {
     userId: params.userId,
   });
+  const follow = useQuery(
+    api.follows.getFollow,
+    !isAuthenticated
+      ? "skip"
+      : {
+          targetUserId: params.userId,
+        }
+  );
+  const followUser = useMutation(api.follows.followUser);
+  const unfollowUser = useMutation(api.follows.unfollowUser);
 
   return (
     <div className="grid grid-cols-3 mt-12">
@@ -109,6 +121,29 @@ export default function ProfilePage() {
         </Avatar>
 
         <h1 className="text-2xl">{profile?.name}</h1>
+
+        {follow ? (
+          <Button
+            onClick={() => {
+              unfollowUser({
+                targetUserId: params.userId,
+              });
+            }}
+            variant={"destructive"}
+          >
+            Unfollow
+          </Button>
+        ) : (
+          <Button
+            onClick={() => {
+              followUser({
+                targetUserId: params.userId,
+              });
+            }}
+          >
+            Follow
+          </Button>
+        )}
       </div>
       <div className="col-span-2">
         <h1 className="text-4xl font-bold">Thumbnails</h1>
