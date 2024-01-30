@@ -20,6 +20,7 @@ jobs:
       - name: Deploy with Convex
         env:
           CONVEX_DEPLOY_KEY: ${{ secrets.CONVEX_DEPLOY_KEY }}
+          CLERK_JWT_ISSUER_DOMAIN: ${{ secrets.CLERK_JWT_ISSUER_DOMAIN }}
         run: npx convex deploy
 
       - name: Deploy Next UI
