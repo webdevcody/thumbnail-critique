@@ -75,7 +75,7 @@ export function Comments({ thumbnail }: { thumbnail: Doc<"thumbnails"> }) {
 
   return (
     <div>
-      <h2 className="mb-4 text-4xl font-bold text-center">Comments</h2>
+      <h2 className="mb-4 mt-12 text-2xl font-bold text-center">Comments</h2>
 
       <div className="max-w-4xl mx-auto mb-12 space-y-8">
         <div className="space-y-2">
@@ -83,7 +83,7 @@ export function Comments({ thumbnail }: { thumbnail: Doc<"thumbnails"> }) {
             return (
               <div
                 key={`${comment.text}_${comment.createdAt}`}
-                className="border p-4 rounded relative"
+                className="border p-4 rounded relative bg-gray-50 dark:bg-gray-950"
               >
                 {user?.isAdmin && (
                   <Button

@@ -23,7 +23,9 @@ export default function RootLayout({
       <body className={inter.className}>
         <Providers>
           <Header />
-          <div className="container min-h-screen">{children}</div>
+          <div className="container min-h-screen bg-gray-100 dark:bg-black pt-12">
+            {children}
+          </div>
           <Footer />
           <Toaster />
         </Providers>

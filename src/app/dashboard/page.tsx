@@ -26,7 +26,7 @@ export default function DashboardPage() {
   const sortedThumbnails = [...(thumbnails ?? [])].reverse();
 
   return (
-    <div className="pt-12">
+    <div className="">
       <h1 className="text-center text-4xl font-bold mb-12">
         Your Thumbnail Tests
       </h1>

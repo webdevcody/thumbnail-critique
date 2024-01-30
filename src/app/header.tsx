@@ -9,7 +9,7 @@ export function Header() {
   const { isLoading, isAuthenticated } = useSession();
 
   return (
-    <div className="border-b">
+    <div className="border-b dark:bg-gray-900">
       <div className="h-16 container flex justify-between items-center">
         <Link href="/">ThumbnailCritique.com</Link>
 

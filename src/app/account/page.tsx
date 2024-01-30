@@ -15,7 +15,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery } from "convex/react";
-import { ConvexError } from "convex/values";
 import { Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -54,7 +53,7 @@ export default function AccountPage() {
 
   return (
     <div className="mb-12">
-      <h2 className="text-2xl font-bold mb-8 mt-8">Account Settings</h2>
+      <h2 className="text-4xl font-bold mb-8">Account Settings</h2>
 
       <Form {...form}>
         <form

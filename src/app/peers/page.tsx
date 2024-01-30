@@ -16,7 +16,7 @@ export default function PeersPage() {
 
   return (
     <div>
-      <h1 className="text-4xl mt-12 font-bold">Your Peers</h1>
+      <h1 className="text-4xl font-bold">Your Peers</h1>
 
       <div className="grid grid-cols-4 mt-12">
         {peers?.map((peer) => {

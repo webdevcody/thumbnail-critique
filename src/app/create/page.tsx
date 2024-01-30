@@ -29,7 +29,7 @@ export default function CreatePage() {
   const [images, setImages] = useState<string[]>([]);
 
   return (
-    <div className="mt-16">
+    <div className="">
       <h1 className="text-4xl font-bold mb-8">Create a Thumbnail Test</h1>
 
       <p className="text-lg max-w-md mb-8">

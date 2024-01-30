@@ -53,7 +53,7 @@ export default function ExplorePage() {
   const deleteThumbail = useMutation(api.thumbnails.deleteThumbnail);
 
   return (
-    <div className="pt-12">
+    <div className="">
       <h1 className="text-center text-4xl font-bold mb-12">Community Review</h1>
 
       {isLoading && (
