@@ -7,7 +7,7 @@ import Link from "next/link";
 export default function Home() {
   return (
     <main className="">
-      <section className="mt-24 flex flex-col items-center gap-8">
+      <section className="mt-24 flex flex-col items-center gap-8 mb-24">
         <Image
           src="/hero.jpeg"
           width="300"
