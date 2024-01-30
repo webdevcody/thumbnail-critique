@@ -11,7 +11,7 @@ export function Header() {
   return (
     <div className="border-b">
       <div className="h-16 container flex justify-between items-center">
-        <Link href="/">ThumbnailRater</Link>
+        <Link href="/">ThumbnailCritique.com</Link>
 
         <div className="flex gap-8">
           {!isLoading && (
