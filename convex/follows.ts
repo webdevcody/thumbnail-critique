@@ -43,6 +43,8 @@ export const followUser = authMutation({
 export const getFollow = authQuery({
   args: { targetUserId: v.id("users") },
   handler: async (ctx, args) => {
+    if (!ctx.user) return null;
+
     return await ctx.db
       .query("follows")
       .withIndex("by_userId_targetUserId", (q) =>
@@ -55,6 +57,8 @@ export const getFollow = authQuery({
 export const getPeers = authQuery({
   args: {},
   handler: async (ctx, args) => {
+    if (!ctx.user) return [];
+
     const peers = await ctx.db
       .query("follows")
       .withIndex("by_userId_targetUserId", (q) => q.eq("userId", ctx.user._id))

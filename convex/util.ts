@@ -14,7 +14,13 @@ import { ConvexError } from "convex/values";
 
 export const authQuery = customQuery(
   query,
-  customCtx(async (ctx) => ({ user: await getUserOrThrow(ctx) }))
+  customCtx(async (ctx) => {
+    try {
+      return { user: await getUserOrThrow(ctx) };
+    } catch (err) {
+      return { user: null };
+    }
+  })
 );
 
 export const authMutation = customMutation(

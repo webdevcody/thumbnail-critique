@@ -73,6 +73,7 @@ export const getRecentThumbnails = query({
 export const getMyThumbnails = authQuery({
   args: {},
   handler: async (ctx, args) => {
+    if (!ctx.user) return [];
     return await ctx.db
       .query("thumbnails")
       .filter((q) => q.eq(q.field("userId"), ctx.user._id))
