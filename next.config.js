@@ -8,6 +8,9 @@ const nextConfig = {
       {
         hostname: "silent-eel-513.convex.cloud",
       },
+      {
+        hostname: "thumbnailcritique.com",
+      },
     ],
   },
 };
