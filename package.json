@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "deploy": "npx sst deploy --stage prod",
     "start": "next start",
     "lint": "next lint",
     "stripe:listen": "stripe listen --forward-to https://kindly-kookabura-369.convex.site/stripe",
@@ -44,6 +45,9 @@
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "aws-cdk-lib": "2.110.1",
+    "constructs": "10.3.0",
+    "sst": "2.38.7",
     "autoprefixer": "^10.0.1",
     "eslint": "^8",
     "eslint-config-next": "14.0.4",
