@@ -27,8 +27,8 @@ export function Header() {
                   <Link href="/explore" className="link">
                     Explore
                   </Link>
-                  <Link href="/peers" className="link">
-                    Peers
+                  <Link href="/following" className="link">
+                    Following
                   </Link>
                   <Link href="/account" className="link">
                     Account
