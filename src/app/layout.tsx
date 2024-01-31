@@ -5,6 +5,7 @@ import { Providers } from "./providers";
 import { Header } from "./header";
 import { Toaster } from "@/components/ui/toaster";
 import { Footer } from "./footer";
+import NextTopLoader from "nextjs-toploader";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,6 +23,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
         <Providers>
+          <NextTopLoader />
           <Header />
           <div className="bg-gray-100 dark:bg-black">
             <div className="container min-h-screen pt-12">{children}</div>
