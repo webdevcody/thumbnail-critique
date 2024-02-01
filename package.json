@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "npm-run-all --parallel dev:frontend dev:backend",
+    "dev:frontend": "next dev",
+    "dev:backend": "convex dev --typecheck=disable",
     "build": "next build",
     "deploy": "npx sst deploy --stage prod",
     "start": "next start",
@@ -32,6 +34,7 @@
     "next": "14.0.4",
     "next-themes": "^0.2.1",
     "nextjs-toploader": "^1.6.4",
+    "npm-run-all": "^4.1.5",
     "react": "^18",
     "react-dom": "^18",
     "react-hook-form": "^7.49.3",
