@@ -122,7 +122,12 @@ export default function ThumbnailPage() {
     return <div>Loading...</div>;
   }
 
-  const hasVoted = user ? thumbnail.voteIds.includes(user._id) : false;
+  const hasVoted = Boolean(
+    user &&
+      (user._id === thumbnail.userId
+        ? true
+        : thumbnail.voteIds.includes(user._id))
+  );
 
   return (
     <div className="gap-12 flex flex-col">

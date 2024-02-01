@@ -47,7 +47,9 @@ export default function ExplorePage() {
 
   function hasVoted(thumbnail: Doc<"thumbnails">) {
     if (!session.session) return false;
-    return thumbnail.voteIds.includes(session.session?.user.id);
+    if (!user) return false;
+    if (user._id === thumbnail.userId) return true;
+    return thumbnail.voteIds.includes(user._id);
   }
 
   const deleteThumbail = useMutation(api.thumbnails.deleteThumbnail);
@@ -82,64 +84,69 @@ export default function ExplorePage() {
           {thumbnails.map((thumbnail) => {
             return (
               <Card key={thumbnail._id}>
-                <CardHeader className="relative">
-                  {user?.isAdmin && (
-                    <Button
-                      onClick={() => {
-                        deleteThumbail({
-                          thumbnailId: thumbnail._id,
-                        });
-                      }}
-                      className="absolute right-2 top-2"
-                    >
-                      <TrashIcon />
-                    </Button>
-                  )}
-                  <Image
-                    src={getImageUrl(thumbnail.images[0])}
-                    width="600"
-                    height="600"
-                    alt="thumbnail image"
-                  />
-                </CardHeader>
-                <CardContent>
-                  <div className="flex gap-4 items-center mb-2">
-                    <Link href={`/profile/${thumbnail.userId}`}>
-                      <Avatar>
-                        <AvatarImage src={thumbnail.profileImage} />
-                        <AvatarFallback>CN</AvatarFallback>
-                      </Avatar>
-                    </Link>
+                <div className="flex flex-col justify-between">
+                  <div>
+                    <CardHeader className="relative">
+                      {user?.isAdmin && (
+                        <Button
+                          onClick={() => {
+                            deleteThumbail({
+                              thumbnailId: thumbnail._id,
+                            });
+                          }}
+                          className="absolute right-2 top-2"
+                        >
+                          <TrashIcon />
+                        </Button>
+                      )}
+                      <Image
+                        src={getImageUrl(thumbnail.images[0])}
+                        width="600"
+                        height="600"
+                        alt="thumbnail image"
+                      />
+                    </CardHeader>
+                    <CardContent>
+                      <div className="flex gap-4 items-center mb-2">
+                        <Link href={`/profile/${thumbnail.userId}`}>
+                          <Avatar>
+                            <AvatarImage src={thumbnail.profileImage} />
+                            <AvatarFallback>CN</AvatarFallback>
+                          </Avatar>
+                        </Link>
 
-                    <div>
-                      <p>{thumbnail.name}</p>
+                        <div>
+                          <p>{thumbnail.name}</p>
 
-                      <p>
-                        {formatDistance(
-                          new Date(thumbnail._creationTime),
-                          new Date(),
-                          {
-                            addSuffix: true,
-                          }
-                        )}
-                      </p>
-                    </div>
+                          <p>
+                            {formatDistance(
+                              new Date(thumbnail._creationTime),
+                              new Date(),
+                              {
+                                addSuffix: true,
+                              }
+                            )}
+                          </p>
+                        </div>
+                      </div>
+                      <p>{thumbnail.title}</p>
+
+                      <p>votes: {getTotalVotes(thumbnail)}</p>
+                    </CardContent>
                   </div>
-                  <p>{thumbnail.title}</p>
 
-                  <p>votes: {getTotalVotes(thumbnail)}</p>
-                </CardContent>
-                <CardFooter>
-                  <Button
-                    variant={hasVoted(thumbnail) ? "outline" : "default"}
-                    className="w-full"
-                    asChild
-                  >
-                    <Link href={`/thumbnails/${thumbnail._id}`}>
-                      {hasVoted(thumbnail) ? "View Results" : "Vote"}
-                    </Link>
-                  </Button>
-                </CardFooter>
+                  <CardFooter>
+                    <Button
+                      variant={hasVoted(thumbnail) ? "outline" : "default"}
+                      className="w-full"
+                      asChild
+                    >
+                      <Link href={`/thumbnails/${thumbnail._id}`}>
+                        {hasVoted(thumbnail) ? "View Results" : "Vote"}
+                      </Link>
+                    </Button>
+                  </CardFooter>
+                </div>
               </Card>
             );
           })}

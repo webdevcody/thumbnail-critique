@@ -36,6 +36,7 @@ export function Comments({ thumbnail }: { thumbnail: Doc<"thumbnails"> }) {
   const comments = useQuery(api.thumbnails.getComments, {
     thumbnailId: thumbnail._id,
   });
+  const deleteComment = useMutation(api.thumbnails.deleteComment);
   const user = useQuery(
     api.users.getMyUser,
     !isAuthenticated ? "skip" : undefined
@@ -102,20 +103,48 @@ export function Comments({ thumbnail }: { thumbnail: Doc<"thumbnails"> }) {
                     <AvatarImage src={comment.profileUrl} />
                     <AvatarFallback>CN</AvatarFallback>
                   </Avatar>
-                  <div className="flex flex-col gap-2">
-                    <div className="flex gap-4 items-center">
-                      <div className="font-bold">{comment.name}</div>
-                      <div className="text-xs">
-                        {formatDistance(
-                          new Date(comment.createdAt),
-                          new Date(),
-                          {
-                            addSuffix: true,
-                          }
-                        )}
+                  <div className="flex justify-between w-full">
+                    <div className="flex flex-col gap-2">
+                      <div className="flex gap-4 items-center">
+                        <div className="font-bold">{comment.name}</div>
+                        <div className="text-xs">
+                          {formatDistance(
+                            new Date(comment.createdAt),
+                            new Date(),
+                            {
+                              addSuffix: true,
+                            }
+                          )}
+                        </div>
                       </div>
+                      <pre className="font-sans">{comment.text}</pre>
                     </div>
-                    <div>{comment.text}</div>
+                    <Button
+                      className="flex gap-2"
+                      variant={"destructive"}
+                      size="sm"
+                      onClick={() => {
+                        deleteComment({
+                          commentId: comment._id,
+                        })
+                          .then(() => {
+                            toast({
+                              title: "Comment Deleted",
+                              description: "Your comment has been deleted",
+                              variant: "default",
+                            });
+                          })
+                          .catch(() => {
+                            toast({
+                              title: "Something happened",
+                              description: "We could not delete your comment",
+                              variant: "destructive",
+                            });
+                          });
+                      }}
+                    >
+                      <TrashIcon size="14" /> Delete
+                    </Button>
                   </div>
                 </div>
               </div>

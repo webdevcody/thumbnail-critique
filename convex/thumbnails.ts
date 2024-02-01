@@ -1,4 +1,4 @@
-import { v } from "convex/values";
+import { ConvexError, v } from "convex/values";
 import { query } from "./_generated/server";
 import { paginationOptsValidator } from "convex/server";
 import { adminAuthMutation, authMutation, authQuery } from "./util";
@@ -119,6 +119,23 @@ export const deleteThumbnail = adminAuthMutation({
   args: { thumbnailId: v.id("thumbnails") },
   async handler(ctx, args) {
     await ctx.db.delete(args.thumbnailId);
+  },
+});
+
+export const deleteComment = authMutation({
+  args: { commentId: v.id("comments") },
+  async handler(ctx, args) {
+    const comment = await ctx.db.get(args.commentId);
+
+    if (!comment) {
+      throw new ConvexError("invalid comment id");
+    }
+
+    if (comment.userId !== ctx.user._id) {
+      throw new ConvexError("you can only delete your own comments");
+    }
+
+    await ctx.db.delete(args.commentId);
   },
 });
 

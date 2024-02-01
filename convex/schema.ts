@@ -7,7 +7,7 @@ export default defineSchema({
     userId: v.id("users"),
     images: v.array(v.string()),
     votes: v.array(v.number()),
-    voteIds: v.array(v.string()),
+    voteIds: v.array(v.id("users")),
     profileImage: v.optional(v.string()),
     name: v.optional(v.string()),
   }),
