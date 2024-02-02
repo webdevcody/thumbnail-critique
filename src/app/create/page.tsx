@@ -3,16 +3,15 @@
 import { useAction, useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { UploadButton, UploadFileResponse } from "@xixixao/uploadstuff/react";
-import "@xixixao/uploadstuff/react/styles.css";
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import Image from "next/image";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import clsx from "clsx";
 import { useRouter } from "next/navigation";
-import { getImageUrl } from "@/lib/utils";
+import { cn, getImageUrl } from "@/lib/utils";
 import { UpgradeButton } from "@/components/upgrade-button";
 import { Id } from "../../../convex/_generated/dataModel";
 
@@ -30,7 +29,7 @@ export default function CreatePage() {
   const [images, setImages] = useState<Id<"_storage">[]>([]);
 
   return (
-    <div className="">
+    <div>
       <h1 className="text-4xl font-bold mb-8">Create a Thumbnail Test</h1>
 
       <p className="text-lg max-w-md mb-8">
@@ -96,7 +95,7 @@ export default function CreatePage() {
         }}
       >
         <div className="flex flex-col gap-4 mb-8">
-          <Label htmlFor="title">Your Test Title</Label>
+          <Label htmlFor="title">Youtube Title</Label>
           <Input
             id="title"
             type="text"
@@ -132,6 +131,14 @@ export default function CreatePage() {
               {images.length > 0 && "Another"} Thumbnail Image
             </Label>
             <UploadButton
+              className={(combinedState) => {
+                return cn(buttonVariants());
+              }}
+              content={(progress) =>
+                progress === null || progress === 0
+                  ? `Choose File`
+                  : "Uploading..."
+              }
               uploadUrl={generateUploadUrl}
               fileTypes={["image/*"]}
               onUploadComplete={async (uploaded: UploadFileResponse[]) => {

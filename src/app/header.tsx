@@ -14,6 +14,8 @@ export function Header() {
 
   return (
     <div className="border-b dark:bg-gray-900">
+      <MobileNav isOpen={isOpen} toggleOpen={toggleOpen} />
+
       <div className="h-16 container flex justify-between items-center">
         <Link
           href="/"
@@ -29,34 +31,27 @@ export function Header() {
           <span className="text-xs md:text-md">ThumbnailCritique</span>
         </Link>
 
-        <MobileNav isOpen={isOpen} toggleOpen={toggleOpen} />
-
-        <div className="gap-4 hidden sm:flex md:gap-8 text-xs md:text-base">
-          {!isLoading && (
+        <div className="gap-4 hidden md:flex md:gap-8 text-xs md:text-base">
+          {!isLoading && isAuthenticated && (
             <>
-              {isAuthenticated && (
-                <>
-                  <Link href="/dashboard" className="link">
-                    Dashboard
-                  </Link>
-                  <Link href="/create" className="link">
-                    Create
-                  </Link>
-                  <Link href="/explore" className="link">
-                    Explore
-                  </Link>
-                  <Link href="/following" className="link">
-                    Following
-                  </Link>
-                  <Link href="/account" className="link">
-                    Account
-                  </Link>
-                </>
-              )}
+              <Link href="/dashboard" className="link">
+                Dashboard
+              </Link>
+              <Link href="/create" className="link">
+                Create
+              </Link>
+              <Link href="/explore" className="link">
+                Explore
+              </Link>
+              <Link href="/following" className="link">
+                Following
+              </Link>
+              <Link href="/account" className="link">
+                Account
+              </Link>
             </>
           )}
         </div>
-
         <div className="flex gap-4 items-center">
           {!isLoading && (
             <>
@@ -68,6 +63,7 @@ export function Header() {
               {!isAuthenticated && <SignInButton />}
             </>
           )}
+
           <ModeToggle />
 
           <MenuToggle toggle={toggleOpen} />

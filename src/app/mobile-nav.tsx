@@ -38,95 +38,93 @@ export default function MobileNav({
   const { signOut } = useClerk();
 
   return (
-    <>
-      <motion.nav
-        initial={false}
-        animate={isOpen ? "open" : "closed"}
-        custom={height}
-        className={`flex justify-end w-full sm:hidden ${
-          isOpen ? "" : "pointer-events-none"
-        }`}
-        ref={containerRef}
+    <motion.nav
+      initial={false}
+      animate={isOpen ? "open" : "closed"}
+      custom={height}
+      className={`flex justify-end w-full sm:hidden ${
+        isOpen ? "" : "pointer-events-none"
+      }`}
+      ref={containerRef}
+    >
+      <motion.div
+        className="absolute inset-0 top-16 left-0 w-full dark:bg-gray-900 bg-white z-50"
+        variants={sidebar}
+      />
+      <motion.ul
+        variants={variants}
+        className="absolute inset-0 grid w-full gap-3 py-16 z-50 "
       >
-        <motion.div
-          className="absolute inset-0 top-16 left-0 w-full dark:bg-gray-900 bg-white z-50"
-          variants={sidebar}
-        />
-        <motion.ul
-          variants={variants}
-          className="absolute inset-0 grid w-full gap-3 py-16 z-50 "
-        >
-          <div className="dark:text-white text-black flex flex-col items-center">
-            <MenuItem className="my-3 h-px w-full bg-gray-300" />
-            <MenuItem key="Dashboard">
-              <Link
-                href="/dashboard"
-                onClick={() => toggleOpen()}
-                className="flex w-full font-semibold capitalize"
-              >
-                Dashboard
-              </Link>
-            </MenuItem>
-            <MenuItem className="my-3 h-px w-full bg-gray-300" />
-            <MenuItem key="Create">
-              <Link
-                href="/create"
-                onClick={() => toggleOpen()}
-                className="flex w-full font-semibold capitalize"
-              >
-                Create
-              </Link>
-            </MenuItem>
-            <MenuItem className="my-3 h-px w-full bg-gray-300" />
-            <MenuItem key="Explore">
-              <Link
-                href="/explore"
-                onClick={() => toggleOpen()}
-                className="flex w-full font-semibold capitalize"
-              >
-                Explore
-              </Link>
-            </MenuItem>
-            <MenuItem className="my-3 h-px w-full bg-gray-300" />
+        <div className="dark:text-white text-black flex flex-col items-center">
+          <MenuItem className="my-3 h-px w-full bg-gray-300" />
+          <MenuItem key="Dashboard">
+            <Link
+              href="/dashboard"
+              onClick={() => toggleOpen()}
+              className="flex w-full font-semibold capitalize"
+            >
+              Dashboard
+            </Link>
+          </MenuItem>
+          <MenuItem className="my-3 h-px w-full bg-gray-300" />
+          <MenuItem key="Create">
+            <Link
+              href="/create"
+              onClick={() => toggleOpen()}
+              className="flex w-full font-semibold capitalize"
+            >
+              Create
+            </Link>
+          </MenuItem>
+          <MenuItem className="my-3 h-px w-full bg-gray-300" />
+          <MenuItem key="Explore">
+            <Link
+              href="/explore"
+              onClick={() => toggleOpen()}
+              className="flex w-full font-semibold capitalize"
+            >
+              Explore
+            </Link>
+          </MenuItem>
+          <MenuItem className="my-3 h-px w-full bg-gray-300" />
 
-            <MenuItem key="Following">
-              <Link
-                href="/following"
-                onClick={() => toggleOpen()}
-                className="flex w-full font-semibold capitalize"
-              >
-                Following
-              </Link>
-            </MenuItem>
-            <MenuItem className="my-3 h-px w-full bg-gray-300" />
+          <MenuItem key="Following">
+            <Link
+              href="/following"
+              onClick={() => toggleOpen()}
+              className="flex w-full font-semibold capitalize"
+            >
+              Following
+            </Link>
+          </MenuItem>
+          <MenuItem className="my-3 h-px w-full bg-gray-300" />
 
-            <MenuItem key="Account">
-              <Link
-                href="/account"
-                onClick={() => toggleOpen()}
-                className="flex w-full font-semibold capitalize"
-              >
-                Account
-              </Link>
-            </MenuItem>
-            <MenuItem className="my-3 h-px w-full bg-gray-300" />
+          <MenuItem key="Account">
+            <Link
+              href="/account"
+              onClick={() => toggleOpen()}
+              className="flex w-full font-semibold capitalize"
+            >
+              Account
+            </Link>
+          </MenuItem>
+          <MenuItem className="my-3 h-px w-full bg-gray-300" />
 
-            <MenuItem key="SignOut">
-              <Link
-                href="/"
-                onClick={() => {
-                  signOut();
-                  toggleOpen();
-                }}
-                className="flex w-full font-semibold capitalize"
-              >
-                Sign Out
-              </Link>
-            </MenuItem>
-          </div>
-        </motion.ul>
-      </motion.nav>
-    </>
+          <MenuItem key="SignOut">
+            <Link
+              href="/"
+              onClick={() => {
+                signOut();
+                toggleOpen();
+              }}
+              className="flex w-full font-semibold capitalize"
+            >
+              Sign Out
+            </Link>
+          </MenuItem>
+        </div>
+      </motion.ul>
+    </motion.nav>
   );
 }
 
