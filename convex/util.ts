@@ -97,10 +97,3 @@ async function getUserOrThrow(ctx: QueryCtx | MutationCtx) {
 export const getUser = async (ctx: QueryCtx | MutationCtx | ActionCtx) => {
   return await ctx.auth.getUserIdentity();
 };
-
-export const getUserById = async (
-  ctx: QueryCtx | MutationCtx,
-  userId: string
-) => {
-  return ctx.db;
-};

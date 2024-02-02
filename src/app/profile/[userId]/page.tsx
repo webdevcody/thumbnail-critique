@@ -115,7 +115,7 @@ export default function ProfilePage() {
   const unfollowUser = useMutation(api.follows.unfollowUser);
 
   return (
-    <div className="grid grid-cols-3 mt-12">
+    <div className="grid grid-cols-1 md:grid-cols-3 mt-12">
       <div className="flex flex-col gap-2 items-center">
         <Avatar className="w-40 h-40">
           <AvatarImage src={profile?.profileImage} />
@@ -147,8 +147,9 @@ export default function ProfilePage() {
           </Button>
         )}
       </div>
+
       <div className="col-span-2">
-        <h1 className="text-4xl font-bold">Thumbnails</h1>
+        <h1 className="text-4xl font-bold mt-12 md:mt-4">Thumbnails</h1>
 
         <UserThumbnails />
       </div>

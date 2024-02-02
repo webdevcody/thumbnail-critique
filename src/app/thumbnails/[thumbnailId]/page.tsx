@@ -167,7 +167,7 @@ export default function ThumbnailPage() {
       {/* {!hasVoted && ( */}
       <>
         <Tabs defaultValue="grid" className="">
-          <TabsList className="grid w-96 grid-cols-2 mx-auto mb-4">
+          <TabsList className="grid max-w-96 grid-cols-2 mx-auto mb-4">
             <TabsTrigger
               value="grid"
               className="flex items-center justify-center gap-2"
