@@ -30,17 +30,7 @@ export const generateAIComment = internalAction({
           content: [
             {
               type: "text",
-              text: `Describe which Thumbnails Looks the Best and be sure to output enough description so the use knows which thumbnail you are talking about.  Try to judge the thumbnail on the following criteria:
-              
-              - Does it have a good color balance?
-              - Does it have a good contrast?
-              - Does it have a good lighting?
-              - Is it simple?
-              - Does it stand out?
-              - Is the main subject obvious?
-              - Is the text engaging enough for users to click?
-
-              `,
+              text: `Describe which thumbnail looks the best and might provide the highest click through rate:`,
             },
             ...(images as any),
           ],
