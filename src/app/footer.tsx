@@ -30,6 +30,26 @@ export function Footer() {
                   Gradient Tool
                 </Link>
               </ul>
+
+              <ul className="text-gray-500 dark:text-gray-400 font-medium">
+                <Link
+                  href="https://thumbnailcheck.com/"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Thumbnail Check
+                </Link>
+              </ul>
+
+              <ul className="text-gray-500 dark:text-gray-400 font-medium">
+                <Link
+                  href="https://thumbnailtest.com/"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Thumbnail Test
+                </Link>
+              </ul>
             </div>
             <div>
               <h2 className="mb-6 text-sm font-semibold text-gray-900 uppercase dark:text-white">

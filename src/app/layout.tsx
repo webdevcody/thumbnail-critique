@@ -6,6 +6,7 @@ import { Header } from "./header";
 import { Toaster } from "@/components/ui/toaster";
 import { Footer } from "./footer";
 import NextTopLoader from "nextjs-toploader";
+import Script from "next/script";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,6 +23,11 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
+        <Script
+          src="https://beamanalytics.b-cdn.net/beam.min.js"
+          data-token="a07e2826-5910-4684-9e69-0ec4388a0509"
+          async
+        ></Script>
         <Providers>
           <NextTopLoader />
           <Header />
