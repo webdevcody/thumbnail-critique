@@ -8,7 +8,6 @@ export function Footer() {
               <span className="hidden md:block self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
                 ThumbnailCritique.com
               </span>
-              <div className="hidden md:flex">HELLO WORLD</div>
             </a>
           </div>
           <div className="grid grid-cols-2 gap-8 sm:gap-6 sm:grid-cols-3">

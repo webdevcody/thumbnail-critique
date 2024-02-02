@@ -25,7 +25,7 @@ export default function RootLayout({
         <Providers>
           <NextTopLoader />
           <Header />
-          <div className="bg-gray-100 dark:bg-black">
+          <div className="bg-gray-100 dark:bg-black pb-12">
             <div className="container min-h-screen pt-12">{children}</div>
           </div>
           <Footer />
