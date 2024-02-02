@@ -117,7 +117,7 @@ export function Comments({ thumbnail }: { thumbnail: Doc<"thumbnails"> }) {
                           )}
                         </div>
                       </div>
-                      <pre className="font-sans">{comment.text}</pre>
+                      <pre className="font-sans text-wrap">{comment.text}</pre>
                     </div>
                     <Button
                       className="flex gap-2"
