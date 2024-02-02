@@ -159,7 +159,7 @@ export default function ThumbnailPage() {
           thumbnail={thumbnail}
         />
 
-        <div className="flex justify-between gap-4">
+        <div className="flex justify-between gap-4 items-center">
           <Button
             onClick={() => {
               const nextIndex = currentImageIndex - 1;
@@ -173,6 +173,11 @@ export default function ThumbnailPage() {
           >
             <ArrowLeftIcon size={"14"} /> Previous
           </Button>
+
+          <div>
+            {currentImageIndex + 1} of {thumbnail.images.length}
+          </div>
+
           <Button
             onClick={() => {
               const nextIndex = currentImageIndex + 1;
