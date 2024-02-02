@@ -86,18 +86,6 @@ export function Comments({ thumbnail }: { thumbnail: Doc<"thumbnails"> }) {
                 key={`${comment.text}_${comment.createdAt}`}
                 className="border p-4 rounded relative bg-gray-50 dark:bg-gray-950"
               >
-                {user?.isAdmin && (
-                  <Button
-                    onClick={() => {
-                      adminDeleteComment({
-                        commentId: comment._id,
-                      });
-                    }}
-                    className="absolute right-2 top-2"
-                  >
-                    <TrashIcon />
-                  </Button>
-                )}
                 <div className="flex gap-4">
                   <Avatar>
                     <AvatarImage src={comment.profileUrl} />
@@ -119,32 +107,51 @@ export function Comments({ thumbnail }: { thumbnail: Doc<"thumbnails"> }) {
                       </div>
                       <pre className="font-sans text-wrap">{comment.text}</pre>
                     </div>
-                    <Button
-                      className="flex gap-2"
-                      variant={"destructive"}
-                      size="sm"
-                      onClick={() => {
-                        deleteComment({
-                          commentId: comment._id,
-                        })
-                          .then(() => {
-                            toast({
-                              title: "Comment Deleted",
-                              description: "Your comment has been deleted",
-                              variant: "default",
+                    <div className="flex flex-col gap-2">
+                      {comment.userId === user?._id && (
+                        <Button
+                          className="flex gap-2"
+                          variant={"destructive"}
+                          size="sm"
+                          onClick={() => {
+                            deleteComment({
+                              commentId: comment._id,
+                            })
+                              .then(() => {
+                                toast({
+                                  title: "Comment Deleted",
+                                  description: "Your comment has been deleted",
+                                  variant: "default",
+                                });
+                              })
+                              .catch(() => {
+                                toast({
+                                  title: "Something happened",
+                                  description:
+                                    "We could not delete your comment",
+                                  variant: "destructive",
+                                });
+                              });
+                          }}
+                        >
+                          <TrashIcon size="14" /> Delete
+                        </Button>
+                      )}
+                      {comment.userId !== user?._id && user?.isAdmin && (
+                        <Button
+                          className="flex gap-2"
+                          variant={"destructive"}
+                          size={"sm"}
+                          onClick={() => {
+                            adminDeleteComment({
+                              commentId: comment._id,
                             });
-                          })
-                          .catch(() => {
-                            toast({
-                              title: "Something happened",
-                              description: "We could not delete your comment",
-                              variant: "destructive",
-                            });
-                          });
-                      }}
-                    >
-                      <TrashIcon size="14" /> Delete
-                    </Button>
+                          }}
+                        >
+                          <TrashIcon size="14" /> Delete
+                        </Button>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
