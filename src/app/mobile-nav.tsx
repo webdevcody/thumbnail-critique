@@ -125,7 +125,6 @@ export default function MobileNav({
             </MenuItem>
           </div>
         </motion.ul>
-        <MenuToggle toggle={toggleOpen} />
       </motion.nav>
     </>
   );
@@ -145,23 +144,13 @@ const useDimensions = (ref: any) => {
   return dimensions.current;
 };
 
-const MenuToggle = ({ toggle }: { toggle: any }) => (
+export const MenuToggle = ({ toggle }: { toggle: any }) => (
   <button
     onClick={toggle}
-    className="pointer-events-auto flex z-50 dark:text-white text-black mr-3"
+    className="sm:hidden pointer-events-auto flex z-50 dark:text-white text-black mr-3"
   >
     <MenuIcon />
   </button>
-);
-
-const Path = (props: any) => (
-  <motion.path
-    fill="transparent"
-    strokeWidth="2"
-    stroke="hsl(0, 0%, 18%)"
-    strokeLinecap="round"
-    {...props}
-  />
 );
 
 const MenuItem = ({

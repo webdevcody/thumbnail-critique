@@ -4,7 +4,7 @@ import { SignInButton, UserButton } from "@clerk/nextjs";
 import { ModeToggle } from "./mode-toggle";
 import Link from "next/link";
 import { useSession } from "@/lib/utils";
-import MobileNav, { useMobileNavState } from "./mobile-nav";
+import MobileNav, { MenuToggle, useMobileNavState } from "./mobile-nav";
 import Image from "next/image";
 
 export function Header() {
@@ -15,22 +15,23 @@ export function Header() {
   return (
     <div className="border-b dark:bg-gray-900">
       <div className="h-16 container flex justify-between items-center">
-        <Link href="/" className="flex gap-2 items-center">
+        <Link
+          href="/"
+          className="flex gap-2 items-center relative flex-shrink-0"
+        >
           <Image
             className="rounded"
             src="/hero.jpeg"
+            alt="logo"
             width="40"
             height="40"
-            alt="logo"
           />
-          <span className="hidden sm:block text-xs md:text-md">
-            ThumbnailCritique
-          </span>
+          <span className="text-xs md:text-md">ThumbnailCritique</span>
         </Link>
 
         <MobileNav isOpen={isOpen} toggleOpen={toggleOpen} />
 
-        <div className="gap-4 md:gap-8 hidden sm:flex text-xs md:text-base">
+        <div className="gap-4 hidden sm:flex md:gap-8 text-xs md:text-base">
           {!isLoading && (
             <>
               {isAuthenticated && (
@@ -68,6 +69,8 @@ export function Header() {
             </>
           )}
           <ModeToggle />
+
+          <MenuToggle toggle={toggleOpen} />
         </div>
       </div>
     </div>
