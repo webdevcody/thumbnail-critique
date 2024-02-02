@@ -3,6 +3,7 @@ import {
   MutationCtx,
   QueryCtx,
   internalMutation,
+  internalQuery,
   query,
 } from "./_generated/server";
 import { authMutation, authQuery } from "./util";
@@ -13,6 +14,18 @@ export const getUser = authQuery({
   args: {},
   handler: async (ctx, args) => {
     return ctx.user;
+  },
+});
+
+export const getUserById = internalQuery({
+  args: { userId: v.string() },
+  handler: async (ctx, args) => {
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_userId", (q) => q.eq("userId", args.userId))
+      .first();
+
+    return user;
   },
 });
 

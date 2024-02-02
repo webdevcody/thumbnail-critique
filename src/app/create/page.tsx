@@ -1,6 +1,6 @@
 "use client";
 
-import { useMutation } from "convex/react";
+import { useAction, useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { UploadButton, UploadFileResponse } from "@xixixao/uploadstuff/react";
 import "@xixixao/uploadstuff/react/styles.css";
@@ -14,6 +14,7 @@ import clsx from "clsx";
 import { useRouter } from "next/navigation";
 import { getImageUrl } from "@/lib/utils";
 import { UpgradeButton } from "@/components/upgrade-button";
+import { Id } from "../../../convex/_generated/dataModel";
 
 const defaultErrorState = {
   title: "",
@@ -22,11 +23,11 @@ const defaultErrorState = {
 
 export default function CreatePage() {
   const generateUploadUrl = useMutation(api.files.generateUploadUrl);
-  const createThumbnail = useMutation(api.thumbnails.createThumbnail);
+  const createThumbnail = useAction(api.thumbnails.createThumbnailAction);
   const { toast } = useToast();
   const router = useRouter();
   const [errors, setErrors] = useState(defaultErrorState);
-  const [images, setImages] = useState<string[]>([]);
+  const [images, setImages] = useState<Id<"_storage">[]>([]);
 
   return (
     <div className="">

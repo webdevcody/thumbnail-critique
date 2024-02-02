@@ -1,6 +1,6 @@
 "use client";
 
-import { useConvexAuth, useMutation, useQuery } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { useParams } from "next/navigation";
 import { api } from "../../../../convex/_generated/api";
 import { Doc, Id } from "../../../../convex/_generated/dataModel";
@@ -17,9 +17,12 @@ import {
   ArrowRightIcon,
   CheckCircleIcon,
   DotIcon,
+  GalleryHorizontal,
+  LayoutGrid,
 } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 function getVotesFor(thumbnail: Doc<"thumbnails">, imageId: string) {
   if (!thumbnail) return 0;
@@ -161,53 +164,92 @@ export default function ThumbnailPage() {
       </div>
 
       {!hasVoted && (
-        <div className="max-w-4xl mx-auto flex flex-col gap-4">
-          <ThumbnailTestImage
-            hasVoted={hasVoted}
-            imageId={thumbnail.images[currentImageIndex]}
-            thumbnail={thumbnail}
-          />
+        <>
+          <Tabs defaultValue="grid" className="">
+            <TabsList className="grid w-96 grid-cols-2 mx-auto mb-4">
+              <TabsTrigger
+                value="grid"
+                className="flex items-center justify-center gap-2"
+              >
+                <LayoutGrid /> Grid
+              </TabsTrigger>
+              <TabsTrigger
+                className="flex items-center justify-center gap-2"
+                value="gallery"
+              >
+                <GalleryHorizontal /> Gallery
+              </TabsTrigger>
+            </TabsList>
 
-          <div className="flex justify-between gap-4 items-center">
-            <Button
-              onClick={() => {
-                const nextIndex = currentImageIndex - 1;
-                if (nextIndex >= 0) {
-                  setCurrentImageIndex(nextIndex);
-                } else {
-                  setCurrentImageIndex(thumbnail.images.length - 1);
-                }
-              }}
-              className="w-fit self-center flex gap-2"
-            >
-              <ArrowLeftIcon size={"14"} /> Previous
-            </Button>
+            <TabsContent value="grid">
+              <div className="mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {thumbnail.images.map((imageId) => {
+                  return (
+                    <ThumbnailTestImage
+                      key={imageId}
+                      hasVoted={hasVoted}
+                      imageId={imageId}
+                      thumbnail={thumbnail}
+                    />
+                  );
+                })}
+              </div>
+            </TabsContent>
 
-            <div>
-              {currentImageIndex + 1} of {thumbnail.images.length}
-            </div>
+            <TabsContent value="gallery">
+              <div className="max-w-2xl mx-auto flex flex-col gap-4">
+                <ThumbnailTestImage
+                  hasVoted={hasVoted}
+                  imageId={thumbnail.images[currentImageIndex]}
+                  thumbnail={thumbnail}
+                />
 
-            <Button
-              onClick={() => {
-                const nextIndex = currentImageIndex + 1;
-                if (nextIndex < thumbnail.images.length) {
-                  setCurrentImageIndex(nextIndex);
-                } else {
-                  setCurrentImageIndex(0);
-                }
-              }}
-              className="w-fit self-center flex gap-2"
-            >
-              Next <ArrowRightIcon size={"14"} />
-            </Button>
-          </div>
-        </div>
+                <div className="flex justify-between gap-4 items-center">
+                  <Button
+                    onClick={() => {
+                      const nextIndex = currentImageIndex - 1;
+                      if (nextIndex >= 0) {
+                        setCurrentImageIndex(nextIndex);
+                      } else {
+                        setCurrentImageIndex(thumbnail.images.length - 1);
+                      }
+                    }}
+                    className="w-fit self-center flex gap-2"
+                  >
+                    <ArrowLeftIcon size={"14"} /> Previous
+                  </Button>
+
+                  <div>
+                    {currentImageIndex + 1} of {thumbnail.images.length}
+                  </div>
+
+                  <Button
+                    onClick={() => {
+                      const nextIndex = currentImageIndex + 1;
+                      if (nextIndex < thumbnail.images.length) {
+                        setCurrentImageIndex(nextIndex);
+                      } else {
+                        setCurrentImageIndex(0);
+                      }
+                    }}
+                    className="w-fit self-center flex gap-2"
+                  >
+                    Next <ArrowRightIcon size={"14"} />
+                  </Button>
+                </div>
+              </div>
+            </TabsContent>
+          </Tabs>
+        </>
       )}
 
       {hasVoted && (
         <div className="max-w-4xl mx-auto flex flex-col gap-4">
           {sortedImages.map((imageId) => (
-            <div key={imageId} className="grid grid-cols-2 gap-8 items-center">
+            <div
+              key={imageId}
+              className="grid md:grid-cols-2 grid-cols-1 gap-8 items-center"
+            >
               <div className="flex flex-col gap-4 border p-4 bg-white dark:bg-gray-950">
                 <Image
                   width="600"

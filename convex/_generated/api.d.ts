@@ -22,6 +22,7 @@ import type * as stripe from "../stripe.js";
 import type * as thumbnails from "../thumbnails.js";
 import type * as users from "../users.js";
 import type * as util from "../util.js";
+import type * as vision from "../vision.js";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -40,6 +41,7 @@ declare const fullApi: ApiFromModules<{
   thumbnails: typeof thumbnails;
   users: typeof users;
   util: typeof util;
+  vision: typeof vision;
 }>;
 export declare const api: FilterApi<
   typeof fullApi,

@@ -1,23 +1,59 @@
 import { ConvexError, v } from "convex/values";
-import { query } from "./_generated/server";
+import { action, internalMutation, query } from "./_generated/server";
 import { paginationOptsValidator } from "convex/server";
-import { adminAuthMutation, authMutation, authQuery } from "./util";
+import { adminAuthMutation, authAction, authMutation, authQuery } from "./util";
+import { internal } from "./_generated/api";
+import { Id } from "./_generated/dataModel";
 
-export const createThumbnail = authMutation({
+export const createThumbnail = internalMutation({
   args: {
     title: v.string(),
     images: v.array(v.string()),
+    userId: v.id("users"),
   },
   handler: async (ctx, args) => {
-    return await ctx.db.insert("thumbnails", {
+    const user = await ctx.db.get(args.userId);
+
+    if (!user) {
+      throw new ConvexError("User not found");
+    }
+
+    const id = await ctx.db.insert("thumbnails", {
       title: args.title,
-      userId: ctx.user._id,
+      userId: user._id,
       images: args.images,
       votes: args.images.map(() => 0),
       voteIds: [],
-      profileImage: ctx.user.profileImage,
-      name: ctx.user.name,
+      profileImage: user.profileImage,
+      name: user.name,
     });
+
+    return id;
+  },
+});
+
+export const createThumbnailAction = authAction({
+  args: {
+    title: v.string(),
+    images: v.array(v.id("_storage")),
+  },
+  handler: async (ctx, args) => {
+    const thumbnailId: Id<"thumbnails"> = await ctx.runMutation(
+      internal.thumbnails.createThumbnail,
+      {
+        images: args.images,
+        title: args.title,
+        userId: ctx.user._id,
+      }
+    );
+
+    await ctx.scheduler.runAfter(0, internal.vision.generateAIComment, {
+      imageIds: args.images,
+      thumbnailId: thumbnailId,
+      userId: ctx.user._id,
+    });
+
+    return thumbnailId;
   },
 });
 
@@ -49,6 +85,30 @@ export const addComment = authMutation({
       thumbnailId: args.thumbnailId,
       name: ctx.user.name ?? "Annoymous",
       profileUrl: ctx.user.profileImage ?? "",
+    });
+  },
+});
+
+export const addCommentInternal = internalMutation({
+  args: {
+    thumbnailId: v.id("thumbnails"),
+    text: v.string(),
+    userId: v.id("users"),
+  },
+  handler: async (ctx, args) => {
+    const thumbnail = await ctx.db.get(args.thumbnailId);
+
+    if (!thumbnail) {
+      throw new Error("thumbnail by id did not exist");
+    }
+
+    await ctx.db.insert("comments", {
+      createdAt: Date.now(),
+      text: args.text,
+      userId: args.userId,
+      thumbnailId: args.thumbnailId,
+      name: "GPT4 Vision",
+      profileUrl: "",
     });
   },
 });

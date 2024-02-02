@@ -2,15 +2,18 @@ import {
   ActionCtx,
   MutationCtx,
   QueryCtx,
+  action,
   mutation,
 } from "./_generated/server";
 import {
   customQuery,
   customCtx,
   customMutation,
+  customAction,
 } from "convex-helpers/server/customFunctions";
 import { query } from "./_generated/server";
 import { ConvexError } from "convex/values";
+import { internal } from "./_generated/api";
 
 export const authQuery = customQuery(
   query,
@@ -20,6 +23,27 @@ export const authQuery = customQuery(
     } catch (err) {
       return { user: null };
     }
+  })
+);
+
+export const authAction = customAction(
+  action,
+  customCtx(async (ctx) => {
+    const userId = (await ctx.auth.getUserIdentity())?.subject;
+
+    if (!userId) {
+      throw new ConvexError("must be logged in");
+    }
+
+    const user: any = await ctx.runQuery(internal.users.getUserById, {
+      userId,
+    });
+
+    if (!user) {
+      throw new ConvexError("user not found");
+    }
+
+    return { user };
   })
 );
 
