@@ -115,12 +115,14 @@ export default function CreatePage() {
             return (
               <div key={imageUrl} className="flex flex-col">
                 <div>Image {idx + 1}</div>
-                <Image
-                  width="600"
-                  height="800"
-                  alt="image test a"
-                  src={getImageUrl(imageUrl)}
-                />
+                <div className="relative aspect-[1280/720]">
+                  <Image
+                    alt="image test image"
+                    className="object-cover"
+                    src={getImageUrl(imageUrl)}
+                    layout="fill"
+                  />
+                </div>
               </div>
             );
           })}

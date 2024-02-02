@@ -99,12 +99,14 @@ export default function ExplorePage() {
                           <TrashIcon />
                         </Button>
                       )}
-                      <Image
-                        src={getImageUrl(thumbnail.images[0])}
-                        width="600"
-                        height="600"
-                        alt="thumbnail image"
-                      />
+                      <div className="relative aspect-[1280/720]">
+                        <Image
+                          alt="image test"
+                          className="object-cover"
+                          src={getImageUrl(thumbnail.images[0])}
+                          layout="fill"
+                        />
+                      </div>
                     </CardHeader>
                     <CardContent>
                       <div className="flex gap-4 items-center mb-2">

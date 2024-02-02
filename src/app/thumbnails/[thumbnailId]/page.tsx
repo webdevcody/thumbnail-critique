@@ -50,13 +50,14 @@ function ThumbnailTestImage({
 
   return (
     <div className="flex flex-col gap-4 border p-4 bg-white dark:bg-gray-950">
-      <Image
-        width="600"
-        height="600"
-        alt="image test a"
-        className="w-full"
-        src={getImageUrl(imageId)}
-      />
+      <div className="relative aspect-[1280/720]">
+        <Image
+          alt="image test"
+          className="object-cover"
+          src={getImageUrl(imageId)}
+          layout="fill"
+        />
+      </div>
 
       <div className="flex gap-4">
         <Link href={`/profile/${thumbnail.userId}`}>
@@ -163,87 +164,87 @@ export default function ThumbnailPage() {
         </Link>
       </div>
 
-      {!hasVoted && (
-        <>
-          <Tabs defaultValue="grid" className="">
-            <TabsList className="grid w-96 grid-cols-2 mx-auto mb-4">
-              <TabsTrigger
-                value="grid"
-                className="flex items-center justify-center gap-2"
-              >
-                <LayoutGrid /> Grid
-              </TabsTrigger>
-              <TabsTrigger
-                className="flex items-center justify-center gap-2"
-                value="gallery"
-              >
-                <GalleryHorizontal /> Gallery
-              </TabsTrigger>
-            </TabsList>
+      {/* {!hasVoted && ( */}
+      <>
+        <Tabs defaultValue="grid" className="">
+          <TabsList className="grid w-96 grid-cols-2 mx-auto mb-4">
+            <TabsTrigger
+              value="grid"
+              className="flex items-center justify-center gap-2"
+            >
+              <LayoutGrid /> Grid
+            </TabsTrigger>
+            <TabsTrigger
+              className="flex items-center justify-center gap-2"
+              value="gallery"
+            >
+              <GalleryHorizontal /> Gallery
+            </TabsTrigger>
+          </TabsList>
 
-            <TabsContent value="grid">
-              <div className="mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {thumbnail.images.map((imageId) => {
-                  return (
-                    <ThumbnailTestImage
-                      key={imageId}
-                      hasVoted={hasVoted}
-                      imageId={imageId}
-                      thumbnail={thumbnail}
-                    />
-                  );
-                })}
-              </div>
-            </TabsContent>
+          <TabsContent value="grid">
+            <div className="mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {thumbnail.images.map((imageId) => {
+                return (
+                  <ThumbnailTestImage
+                    key={imageId}
+                    hasVoted={hasVoted}
+                    imageId={imageId}
+                    thumbnail={thumbnail}
+                  />
+                );
+              })}
+            </div>
+          </TabsContent>
 
-            <TabsContent value="gallery">
-              <div className="max-w-2xl mx-auto flex flex-col gap-4">
-                <ThumbnailTestImage
-                  hasVoted={hasVoted}
-                  imageId={thumbnail.images[currentImageIndex]}
-                  thumbnail={thumbnail}
-                />
+          <TabsContent value="gallery">
+            <div className="max-w-2xl mx-auto flex flex-col gap-4">
+              <ThumbnailTestImage
+                hasVoted={hasVoted}
+                imageId={thumbnail.images[currentImageIndex]}
+                thumbnail={thumbnail}
+              />
 
-                <div className="flex justify-between gap-4 items-center">
-                  <Button
-                    onClick={() => {
-                      const nextIndex = currentImageIndex - 1;
-                      if (nextIndex >= 0) {
-                        setCurrentImageIndex(nextIndex);
-                      } else {
-                        setCurrentImageIndex(thumbnail.images.length - 1);
-                      }
-                    }}
-                    className="w-fit self-center flex gap-2"
-                  >
-                    <ArrowLeftIcon size={"14"} /> Previous
-                  </Button>
+              <div className="flex justify-between gap-4 items-center">
+                <Button
+                  onClick={() => {
+                    const nextIndex = currentImageIndex - 1;
+                    if (nextIndex >= 0) {
+                      setCurrentImageIndex(nextIndex);
+                    } else {
+                      setCurrentImageIndex(thumbnail.images.length - 1);
+                    }
+                  }}
+                  className="w-fit self-center flex gap-2"
+                >
+                  <ArrowLeftIcon size={"14"} /> Previous
+                </Button>
 
-                  <div>
-                    {currentImageIndex + 1} of {thumbnail.images.length}
-                  </div>
-
-                  <Button
-                    onClick={() => {
-                      const nextIndex = currentImageIndex + 1;
-                      if (nextIndex < thumbnail.images.length) {
-                        setCurrentImageIndex(nextIndex);
-                      } else {
-                        setCurrentImageIndex(0);
-                      }
-                    }}
-                    className="w-fit self-center flex gap-2"
-                  >
-                    Next <ArrowRightIcon size={"14"} />
-                  </Button>
+                <div>
+                  {currentImageIndex + 1} of {thumbnail.images.length}
                 </div>
-              </div>
-            </TabsContent>
-          </Tabs>
-        </>
-      )}
 
-      {hasVoted && (
+                <Button
+                  onClick={() => {
+                    const nextIndex = currentImageIndex + 1;
+                    if (nextIndex < thumbnail.images.length) {
+                      setCurrentImageIndex(nextIndex);
+                    } else {
+                      setCurrentImageIndex(0);
+                    }
+                  }}
+                  className="w-fit self-center flex gap-2"
+                >
+                  Next <ArrowRightIcon size={"14"} />
+                </Button>
+              </div>
+            </div>
+          </TabsContent>
+        </Tabs>
+      </>
+      {/* )} */}
+
+      {/* {hasVoted && (
         <div className="max-w-4xl mx-auto flex flex-col gap-4">
           {sortedImages.map((imageId) => (
             <div
@@ -251,13 +252,14 @@ export default function ThumbnailPage() {
               className="grid md:grid-cols-2 grid-cols-1 gap-8 items-center"
             >
               <div className="flex flex-col gap-4 border p-4 bg-white dark:bg-gray-950">
-                <Image
-                  width="600"
-                  height="600"
-                  alt="image test a"
-                  className="w-full"
-                  src={getImageUrl(imageId)}
-                />
+                <div className="relative aspect-[1280/720]">
+                  <Image
+                    alt="image test"
+                    className="object-cover"
+                    src={getImageUrl(imageId)}
+                    layout="fill"
+                  />
+                </div>
 
                 <div className="flex gap-4">
                   <Link href={`/profile/${thumbnail.userId}`}>
@@ -300,7 +302,7 @@ export default function ThumbnailPage() {
             </div>
           ))}
         </div>
-      )}
+      )} */}
 
       <Comments thumbnail={thumbnail} />
     </div>
