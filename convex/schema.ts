@@ -32,6 +32,7 @@ export default defineSchema({
     name: v.optional(v.string()),
     isAdmin: v.optional(v.boolean()),
     profileImage: v.optional(v.string()),
+    isPremium: v.optional(v.boolean()),
   })
     .index("by_userId", ["userId"])
     .index("by_subscriptionId", ["subscriptionId"]),

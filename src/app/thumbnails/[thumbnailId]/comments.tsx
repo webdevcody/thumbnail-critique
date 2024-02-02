@@ -24,6 +24,7 @@ import { useIsSubscribed } from "@/hooks/useIsSubscribed";
 import { UpgradeButton } from "@/components/upgrade-button";
 import { TrashIcon } from "lucide-react";
 import { useSession } from "@/lib/utils";
+import { AI_PROFILE_NAME } from "../../../../convex/constants";
 
 const formSchema = z.object({
   text: z.string().min(1).max(500),
@@ -88,7 +89,13 @@ export function Comments({ thumbnail }: { thumbnail: Doc<"thumbnails"> }) {
               >
                 <div className="flex gap-4">
                   <Avatar>
-                    <AvatarImage src={comment.profileUrl} />
+                    <AvatarImage
+                      src={
+                        comment.name === AI_PROFILE_NAME
+                          ? "/robot.png"
+                          : comment.profileUrl
+                      }
+                    />
                     <AvatarFallback>CN</AvatarFallback>
                   </Avatar>
                   <div className="flex justify-between w-full">

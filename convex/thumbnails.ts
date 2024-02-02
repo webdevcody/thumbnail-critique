@@ -4,6 +4,7 @@ import { paginationOptsValidator } from "convex/server";
 import { adminAuthMutation, authAction, authMutation, authQuery } from "./util";
 import { internal } from "./_generated/api";
 import { Id } from "./_generated/dataModel";
+import { AI_PROFILE_NAME } from "./constants";
 
 export const createThumbnail = internalMutation({
   args: {
@@ -47,11 +48,13 @@ export const createThumbnailAction = authAction({
       }
     );
 
-    await ctx.scheduler.runAfter(0, internal.vision.generateAIComment, {
-      imageIds: args.images,
-      thumbnailId: thumbnailId,
-      userId: ctx.user._id,
-    });
+    if (ctx.user.isPremium) {
+      await ctx.scheduler.runAfter(0, internal.vision.generateAIComment, {
+        imageIds: args.images,
+        thumbnailId: thumbnailId,
+        userId: ctx.user._id,
+      });
+    }
 
     return thumbnailId;
   },
@@ -107,7 +110,7 @@ export const addCommentInternal = internalMutation({
       text: args.text,
       userId: args.userId,
       thumbnailId: args.thumbnailId,
-      name: "GPT4 Vision",
+      name: AI_PROFILE_NAME,
       profileUrl: "",
     });
   },

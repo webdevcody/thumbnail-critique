@@ -14,6 +14,7 @@ import {
 import { query } from "./_generated/server";
 import { ConvexError } from "convex/values";
 import { internal } from "./_generated/api";
+import { Id } from "./_generated/dataModel";
 
 export const authQuery = customQuery(
   query,
@@ -43,7 +44,16 @@ export const authAction = customAction(
       throw new ConvexError("user not found");
     }
 
-    return { user };
+    const _id: Id<"users"> = user._id;
+    const isPremium: boolean = user.isPremium;
+
+    return {
+      user: {
+        _id,
+        userId,
+        isPremium,
+      },
+    };
   })
 );
 
