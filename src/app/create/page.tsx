@@ -100,7 +100,7 @@ export default function CreatePage() {
             id="title"
             type="text"
             name="title"
-            placeholder="Label your test to make it easier to manage later"
+            placeholder="Put your example title of your YouTube video"
             className={clsx({
               border: errors.title,
               "border-red-500": errors.title,

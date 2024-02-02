@@ -1,17 +1,20 @@
+import { XIcon, Youtube } from "lucide-react";
+import Link from "next/link";
+
 export function Footer() {
   return (
     <footer className="bg-white dark:bg-gray-900">
       <div className="mx-auto w-full max-w-screen-xl p-4 py-6 lg:py-8">
         <div className="md:flex md:justify-between">
           <div className="mb-6 md:mb-0">
-            <a
+            <Link
               href="https://thumbnailcritique.com/"
               className="flex items-center"
             >
               <span className="hidden md:block self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
                 ThumbnailCritique.com
               </span>
-            </a>
+            </Link>
           </div>
           <div className="grid grid-cols-2 gap-8 sm:gap-6 sm:grid-cols-3">
             <div>
@@ -19,53 +22,53 @@ export function Footer() {
                 Resources
               </h2>
               <ul className="text-gray-500 dark:text-gray-400 font-medium">
-                {/* <li>
-                  <a
-                    href="https://tailwindcss.com/"
-                    className="hover:underline"
-                  >
-                    Tailwind CSS
-                  </a>
-                </li> */}
+                <Link
+                  href="https://gradient-png-generator.vercel.app/"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Gradient Tool
+                </Link>
               </ul>
             </div>
             <div>
               <h2 className="mb-6 text-sm font-semibold text-gray-900 uppercase dark:text-white">
-                Follow us
+                Follow me
               </h2>
-              <ul className="text-gray-500 dark:text-gray-400 font-medium">
-                {/* <li className="mb-4">
-                  <a
-                    href="https://github.com/themesberg/flowbite"
-                    className="hover:underline "
-                  >
-                    Github
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="https://discord.gg/4eeurUVvTy"
-                    className="hover:underline"
-                  >
-                    Discord
-                  </a>
-                </li> */}
+              <ul className="text-gray-500 dark:text-gray-400 font-medium flex flex-col gap-4">
+                <Link
+                  href="https://x.com/webdevcody"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center gap-2"
+                >
+                  <XIcon /> @WebDevCody
+                </Link>
+
+                <Link
+                  href="https://youtube.com/@webdevcody"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center gap-2"
+                >
+                  <Youtube /> @WebDevCody
+                </Link>
               </ul>
             </div>
             <div>
               <h2 className="mb-6 text-sm font-semibold text-gray-900 uppercase dark:text-white">
                 Legal
               </h2>
-              <ul className="text-gray-500 dark:text-gray-400 font-medium">
-                <li className="mb-4">
-                  <a href="#" className="hover:underline">
+              <ul className="text-gray-500 dark:text-gray-400 font-medium flex flex-col gap-4">
+                <li>
+                  <Link href="/privacy-policy" className="hover:underline">
                     Privacy Policy
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className="hover:underline">
+                  <Link href="/terms-of-service" className="hover:underline">
                     Terms &amp; Conditions
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </div>

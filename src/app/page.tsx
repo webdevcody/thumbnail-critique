@@ -1,10 +1,16 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { useSession } from "@/lib/utils";
+import { SignIn, useSignIn } from "@clerk/clerk-react";
+import { SignInButton } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
 
 export default function Home() {
+  const { isAuthenticated, isLoading } = useSession();
+  const signIn = useSignIn();
+
   return (
     <main className="">
       <section className="mt-24 flex flex-col items-center gap-8 pb-24">
@@ -22,9 +28,16 @@ export default function Home() {
           Upload your thumbnails variations and send links to your friends to
           help you hone in your design skills.
         </p>
-        <Button asChild>
-          <Link href="/create">Get Started</Link>
-        </Button>
+        {!isLoading &&
+          (isAuthenticated ? (
+            <Button asChild>
+              <Link href="/create">Create Thumbnail</Link>
+            </Button>
+          ) : (
+            <SignInButton>
+              <Button>Sign In to Get Started</Button>
+            </SignInButton>
+          ))}
       </section>
     </main>
   );

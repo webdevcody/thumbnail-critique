@@ -28,7 +28,7 @@ export function Header() {
             width="40"
             height="40"
           />
-          <span className="text-xs md:text-md">ThumbnailCritique</span>
+          <span className="text-xs md:text-base">ThumbnailCritique</span>
         </Link>
 
         <div className="gap-4 hidden md:flex md:gap-8 text-xs md:text-base">
