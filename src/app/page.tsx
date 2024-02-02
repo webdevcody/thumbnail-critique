@@ -19,8 +19,8 @@ export default function Home() {
           The easiest way to get feedback on your thumbnails
         </h1>
         <p className="text-center text-gray-700 dark:text-gray-300 text-xl max-w-lg mx-auto">
-          Upload your two thumbnails and send links to your friends to help you
-          hone in your best design skills.
+          Upload your thumbnails variations and send links to your friends to
+          help you hone in your design skills.
         </p>
         <Button asChild>
           <Link href="/create">Get Started</Link>

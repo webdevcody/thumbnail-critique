@@ -4,16 +4,33 @@ import { SignInButton, UserButton } from "@clerk/nextjs";
 import { ModeToggle } from "./mode-toggle";
 import Link from "next/link";
 import { useSession } from "@/lib/utils";
+import MobileNav, { useMobileNavState } from "./mobile-nav";
+import Image from "next/image";
 
 export function Header() {
   const { isLoading, isAuthenticated } = useSession();
 
+  const { isOpen, toggleOpen } = useMobileNavState();
+
   return (
     <div className="border-b dark:bg-gray-900">
       <div className="h-16 container flex justify-between items-center">
-        <Link href="/">ThumbnailCritique.com</Link>
+        <Link href="/" className="flex gap-2 items-center">
+          <Image
+            className="rounded"
+            src="/hero.jpeg"
+            width="40"
+            height="40"
+            alt="logo"
+          />
+          <span className="hidden sm:block text-xs md:text-md">
+            ThumbnailCritique
+          </span>
+        </Link>
 
-        <div className="flex gap-8">
+        <MobileNav isOpen={isOpen} toggleOpen={toggleOpen} />
+
+        <div className="gap-4 md:gap-8 hidden sm:flex text-xs md:text-base">
           {!isLoading && (
             <>
               {isAuthenticated && (
@@ -35,17 +52,6 @@ export function Header() {
                   </Link>
                 </>
               )}
-
-              {/* {!isAuthenticated && (
-                <>
-                  <Link href="/pricing" className="link">
-                    Pricing
-                  </Link>
-                  <Link href="/about" className="link">
-                    About
-                  </Link>
-                </>
-              )} */}
             </>
           )}
         </div>
@@ -55,7 +61,6 @@ export function Header() {
             <>
               {isAuthenticated && (
                 <>
-                  {/* {!isSubscriped && <UpgradeButton />} */}
                   <UserButton />
                 </>
               )}
