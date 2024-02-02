@@ -62,6 +62,38 @@ export const authMutation = customMutation(
   customCtx(async (ctx) => ({ user: await getUserOrThrow(ctx) }))
 );
 
+export const adminAuthAction = customAction(
+  action,
+  customCtx(async (ctx) => {
+    const userId = (await ctx.auth.getUserIdentity())?.subject;
+
+    if (!userId) {
+      throw new ConvexError("must be logged in");
+    }
+
+    const user: any = await ctx.runQuery(internal.users.getUserById, {
+      userId,
+    });
+
+    if (!user) {
+      throw new ConvexError("user not found");
+    }
+
+    if (!user.isAdmin) {
+      throw new ConvexError("must be admin to run this action");
+    }
+
+    const _id: Id<"users"> = user._id;
+
+    return {
+      user: {
+        _id,
+        userId,
+      },
+    };
+  })
+);
+
 export const adminAuthMutation = customMutation(
   mutation,
   customCtx(async (ctx) => {

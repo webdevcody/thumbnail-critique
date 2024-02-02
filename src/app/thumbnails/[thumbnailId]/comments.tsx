@@ -1,7 +1,7 @@
 "use client";
 
 import * as z from "zod";
-import { useMutation, useQuery } from "convex/react";
+import { useAction, useMutation, useQuery } from "convex/react";
 import { Doc } from "../../../../convex/_generated/dataModel";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -20,8 +20,6 @@ import { useForm } from "react-hook-form";
 import { Textarea } from "@/components/ui/textarea";
 import { api } from "../../../../convex/_generated/api";
 import { formatDistance } from "date-fns";
-import { useIsSubscribed } from "@/hooks/useIsSubscribed";
-import { UpgradeButton } from "@/components/upgrade-button";
 import { TrashIcon } from "lucide-react";
 import { useSession } from "@/lib/utils";
 import { AI_PROFILE_NAME } from "../../../../convex/constants";
@@ -37,6 +35,7 @@ export function Comments({ thumbnail }: { thumbnail: Doc<"thumbnails"> }) {
   const comments = useQuery(api.thumbnails.getComments, {
     thumbnailId: thumbnail._id,
   });
+  const adminGenerateAIComment = useAction(api.vision.adminGenerateAIComment);
   const deleteComment = useMutation(api.thumbnails.deleteComment);
   const user = useQuery(
     api.users.getMyUser,
@@ -78,6 +77,34 @@ export function Comments({ thumbnail }: { thumbnail: Doc<"thumbnails"> }) {
   return (
     <div>
       <h2 className="mb-4 mt-12 text-2xl font-bold text-center">Comments</h2>
+
+      {user?.isAdmin && (
+        <div className="flex justify-center mb-4">
+          <Button
+            onClick={() => {
+              adminGenerateAIComment({
+                thumbnailId: thumbnail._id,
+              })
+                .then(() => {
+                  toast({
+                    title: `Async Task Started`,
+                    description: `The AI Comment is being generated`,
+                    variant: "default",
+                  });
+                })
+                .catch(() => {
+                  toast({
+                    title: "Something happened",
+                    description: `We could not generate the AI Comment`,
+                    variant: "destructive",
+                  });
+                });
+            }}
+          >
+            Generate AI Comment
+          </Button>
+        </div>
+      )}
 
       <div className="max-w-2xl mx-auto mb-12 space-y-8">
         <div className="space-y-2">

@@ -2,8 +2,20 @@ import OpenAI from "openai";
 import { internalAction } from "./_generated/server";
 import { v } from "convex/values";
 import { api, internal } from "./_generated/api";
+import { adminAuthAction } from "./util";
 
 const openai = new OpenAI();
+
+export const adminGenerateAIComment = adminAuthAction({
+  args: {
+    thumbnailId: v.id("thumbnails"),
+  },
+  handler: async (ctx, args) => {
+    await ctx.scheduler.runAfter(0, internal.vision.generateAIComment, {
+      thumbnailId: args.thumbnailId,
+    });
+  },
+});
 
 export const generateAIComment = internalAction({
   args: {
