@@ -136,6 +136,14 @@ export default function ThumbnailPage() {
         : thumbnail.voteIds.includes(user._id))
   );
 
+  const sortedImages = thumbnail.images
+    .map((image) => image)
+    .sort((a, b) => {
+      const aVotes = getVotesFor(thumbnail, a);
+      const bVotes = getVotesFor(thumbnail, b);
+      return bVotes - aVotes;
+    });
+
   return (
     <div className="gap-12 flex flex-col">
       <div className="flex items-center justify-center gap-2">
@@ -152,47 +160,105 @@ export default function ThumbnailPage() {
         </Link>
       </div>
 
-      <div className="max-w-4xl mx-auto flex flex-col gap-4">
-        <ThumbnailTestImage
-          hasVoted={hasVoted}
-          imageId={thumbnail.images[currentImageIndex]}
-          thumbnail={thumbnail}
-        />
+      {!hasVoted && (
+        <div className="max-w-4xl mx-auto flex flex-col gap-4">
+          <ThumbnailTestImage
+            hasVoted={hasVoted}
+            imageId={thumbnail.images[currentImageIndex]}
+            thumbnail={thumbnail}
+          />
 
-        <div className="flex justify-between gap-4 items-center">
-          <Button
-            onClick={() => {
-              const nextIndex = currentImageIndex - 1;
-              if (nextIndex >= 0) {
-                setCurrentImageIndex(nextIndex);
-              } else {
-                setCurrentImageIndex(thumbnail.images.length - 1);
-              }
-            }}
-            className="w-fit self-center flex gap-2"
-          >
-            <ArrowLeftIcon size={"14"} /> Previous
-          </Button>
+          <div className="flex justify-between gap-4 items-center">
+            <Button
+              onClick={() => {
+                const nextIndex = currentImageIndex - 1;
+                if (nextIndex >= 0) {
+                  setCurrentImageIndex(nextIndex);
+                } else {
+                  setCurrentImageIndex(thumbnail.images.length - 1);
+                }
+              }}
+              className="w-fit self-center flex gap-2"
+            >
+              <ArrowLeftIcon size={"14"} /> Previous
+            </Button>
 
-          <div>
-            {currentImageIndex + 1} of {thumbnail.images.length}
+            <div>
+              {currentImageIndex + 1} of {thumbnail.images.length}
+            </div>
+
+            <Button
+              onClick={() => {
+                const nextIndex = currentImageIndex + 1;
+                if (nextIndex < thumbnail.images.length) {
+                  setCurrentImageIndex(nextIndex);
+                } else {
+                  setCurrentImageIndex(0);
+                }
+              }}
+              className="w-fit self-center flex gap-2"
+            >
+              Next <ArrowRightIcon size={"14"} />
+            </Button>
           </div>
-
-          <Button
-            onClick={() => {
-              const nextIndex = currentImageIndex + 1;
-              if (nextIndex < thumbnail.images.length) {
-                setCurrentImageIndex(nextIndex);
-              } else {
-                setCurrentImageIndex(0);
-              }
-            }}
-            className="w-fit self-center flex gap-2"
-          >
-            Next <ArrowRightIcon size={"14"} />
-          </Button>
         </div>
-      </div>
+      )}
+
+      {hasVoted && (
+        <div className="max-w-4xl mx-auto flex flex-col gap-4">
+          {sortedImages.map((imageId) => (
+            <div key={imageId} className="grid grid-cols-2 gap-8 items-center">
+              <div className="flex flex-col gap-4 border p-4 bg-white dark:bg-gray-950">
+                <Image
+                  width="600"
+                  height="600"
+                  alt="image test a"
+                  className="w-full"
+                  src={getImageUrl(imageId)}
+                />
+
+                <div className="flex gap-4">
+                  <Link href={`/profile/${thumbnail.userId}`}>
+                    <Avatar>
+                      <AvatarImage src={thumbnail.profileImage} />
+                      <AvatarFallback>CN</AvatarFallback>
+                    </Avatar>
+                  </Link>
+                  <div className="flex flex-col dark:text-gray-300 text-gray-700">
+                    <div className="font-bold mb-2 text-gray-900 dark:text-white">
+                      {thumbnail.title}
+                    </div>
+                    <div className="flex gap-2 items-center text-gray-700 dark:text-gray-300">
+                      {thumbnail.name} <CheckCircleIcon size={12} />
+                    </div>
+                    <div className="flex text-gray-700 dark:text-gray-300">
+                      <div>152K Views</div>
+                      <DotIcon />
+                      {formatDistance(
+                        new Date(thumbnail._creationTime),
+                        new Date(),
+                        {
+                          addSuffix: true,
+                        }
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <Progress
+                  value={getVotePercent(thumbnail, imageId)}
+                  className="w-full bg-gray-200"
+                />
+                <div className="text-lg">
+                  {getVotesFor(thumbnail, imageId)} votes
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
 
       <Comments thumbnail={thumbnail} />
     </div>
