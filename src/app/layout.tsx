@@ -22,12 +22,55 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
+      <head>
+        {/* <meta name="viewport" content="width=device-width, user-scalable=no" /> */}
+        {/* App icons */}
+        {/* <link
+          rel="icon"
+          href="../../icon.png"
+          type="image/png"
+          sizes="256x256"
+        />
+        <link
+          rel="apple-touch-icon"
+          href="../../apple-icon.png"
+          type="image/png"
+          sizes="256x256"
+        />
+
+        <meta property="og:url" content="https://projectplannerai.com/" />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="ProjectPlannerAI" />
+        <meta
+          property="og:description"
+          content="Best way to create plans for side projects."
+        />
+        <meta
+          property="og:image"
+          content="https://projectplannerai.com/opengraph-image.png"
+        />
+
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta property="twitter:domain" content="projectplannerai.com" />
+        <meta property="twitter:url" content="https://projectplannerai.com/" />
+        <meta name="twitter:title" content="ProjectPlannerAI" />
+        <meta
+          name="twitter:description"
+          content="Best way to create plans for side projects."
+        />
+        <meta
+          name="twitter:image"
+          content="https://projectplannerai.com/twitter-image.png"
+        ></meta> */}
+
         <Script
           src="https://beamanalytics.b-cdn.net/beam.min.js"
           data-token="a07e2826-5910-4684-9e69-0ec4388a0509"
           async
         ></Script>
+      </head>
+
+      <body className={inter.className}>
         <Providers>
           <NextTopLoader />
           <Header />
