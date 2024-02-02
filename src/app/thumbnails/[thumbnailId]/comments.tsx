@@ -78,7 +78,7 @@ export function Comments({ thumbnail }: { thumbnail: Doc<"thumbnails"> }) {
     <div>
       <h2 className="mb-4 mt-12 text-2xl font-bold text-center">Comments</h2>
 
-      <div className="max-w-4xl mx-auto mb-12 space-y-8">
+      <div className="max-w-2xl mx-auto mb-12 space-y-8">
         <div className="space-y-2">
           {comments?.map((comment) => {
             return (

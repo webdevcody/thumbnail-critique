@@ -12,8 +12,14 @@ import { Progress } from "@/components/ui/progress";
 import { Comments } from "./comments";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { formatDistance } from "date-fns";
-import { CheckCircleIcon, DotIcon } from "lucide-react";
+import {
+  ArrowLeftIcon,
+  ArrowRightIcon,
+  CheckCircleIcon,
+  DotIcon,
+} from "lucide-react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 function getVotesFor(thumbnail: Doc<"thumbnails">, imageId: string) {
   if (!thumbnail) return 0;
@@ -106,6 +112,7 @@ export default function ThumbnailPage() {
     thumbnailId,
   });
   const user = useQuery(api.users.getMyUser);
+  const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
 
   const session = useSession();
 
@@ -145,17 +152,41 @@ export default function ThumbnailPage() {
         </Link>
       </div>
 
-      <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
-        {thumbnail.images.map((imageId) => {
-          return (
-            <ThumbnailTestImage
-              key={imageId}
-              hasVoted={hasVoted}
-              imageId={imageId}
-              thumbnail={thumbnail}
-            />
-          );
-        })}
+      <div className="max-w-4xl mx-auto flex flex-col gap-4">
+        <ThumbnailTestImage
+          hasVoted={hasVoted}
+          imageId={thumbnail.images[currentImageIndex]}
+          thumbnail={thumbnail}
+        />
+
+        <div className="flex justify-between gap-4">
+          <Button
+            onClick={() => {
+              const nextIndex = currentImageIndex - 1;
+              if (nextIndex >= 0) {
+                setCurrentImageIndex(nextIndex);
+              } else {
+                setCurrentImageIndex(thumbnail.images.length - 1);
+              }
+            }}
+            className="w-fit self-center flex gap-2"
+          >
+            <ArrowLeftIcon size={"14"} /> Previous
+          </Button>
+          <Button
+            onClick={() => {
+              const nextIndex = currentImageIndex + 1;
+              if (nextIndex < thumbnail.images.length) {
+                setCurrentImageIndex(nextIndex);
+              } else {
+                setCurrentImageIndex(0);
+              }
+            }}
+            className="w-fit self-center flex gap-2"
+          >
+            Next <ArrowRightIcon size={"14"} />
+          </Button>
+        </div>
       </div>
 
       <Comments thumbnail={thumbnail} />
