@@ -12,7 +12,7 @@ import {
   customAction,
 } from "convex-helpers/server/customFunctions";
 import { query } from "./_generated/server";
-import { ConvexError } from "convex/values";
+import { ConvexError, v } from "convex/values";
 import { internal } from "./_generated/api";
 import { Id } from "./_generated/dataModel";
 

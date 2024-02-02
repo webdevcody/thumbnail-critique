@@ -94,7 +94,7 @@ export default function ExplorePage() {
                               thumbnailId: thumbnail._id,
                             });
                           }}
-                          className="absolute right-2 top-2"
+                          className="absolute right-2 top-2 z-10"
                         >
                           <TrashIcon />
                         </Button>

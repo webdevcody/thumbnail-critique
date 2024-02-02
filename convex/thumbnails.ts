@@ -50,9 +50,7 @@ export const createThumbnailAction = authAction({
 
     if (ctx.user.isPremium) {
       await ctx.scheduler.runAfter(0, internal.vision.generateAIComment, {
-        imageIds: args.images,
         thumbnailId: thumbnailId,
-        userId: ctx.user._id,
       });
     }
 

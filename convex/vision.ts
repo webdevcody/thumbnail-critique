@@ -7,13 +7,19 @@ const openai = new OpenAI();
 
 export const generateAIComment = internalAction({
   args: {
-    imageIds: v.array(v.id("_storage")),
     thumbnailId: v.id("thumbnails"),
-    userId: v.id("users"),
   },
   async handler(ctx, args) {
+    const thumbnail = await ctx.runQuery(api.thumbnails.getThumbnail, {
+      thumbnailId: args.thumbnailId,
+    });
+
+    if (!thumbnail) {
+      throw new Error("thumbnail by id did not exist");
+    }
+
     const images = await Promise.all(
-      args.imageIds.map(async (imageId) => ({
+      thumbnail.images.map(async (imageId) => ({
         type: "image_url",
         image_url: {
           url: await ctx.storage.getUrl(imageId),
@@ -43,7 +49,7 @@ export const generateAIComment = internalAction({
     await ctx.runMutation(internal.thumbnails.addCommentInternal, {
       thumbnailId: args.thumbnailId,
       text: content ?? "",
-      userId: args.userId,
+      userId: thumbnail.userId,
     });
   },
 });
