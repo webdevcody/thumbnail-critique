@@ -139,54 +139,56 @@ export function Comments({ thumbnail }: { thumbnail: Doc<"thumbnails"> }) {
                           )}
                         </div>
                       </div>
-                      <pre className="font-sans text-wrap">{comment.text}</pre>
-                    </div>
-                    <div className="flex flex-col gap-2">
-                      {comment.userId === user?._id && (
-                        <Button
-                          className="flex gap-2"
-                          variant={"destructive"}
-                          size="sm"
-                          onClick={() => {
-                            deleteComment({
-                              commentId: comment._id,
-                            })
-                              .then(() => {
-                                toast({
-                                  title: "Comment Deleted",
-                                  description: "Your comment has been deleted",
-                                  variant: "default",
-                                });
-                              })
-                              .catch(() => {
-                                toast({
-                                  title: "Something happened",
-                                  description:
-                                    "We could not delete your comment",
-                                  variant: "destructive",
-                                });
-                              });
-                          }}
-                        >
-                          <TrashIcon size="14" /> Delete
-                        </Button>
-                      )}
-                      {comment.userId !== user?._id && user?.isAdmin && (
-                        <Button
-                          className="flex gap-2"
-                          variant={"destructive"}
-                          size={"sm"}
-                          onClick={() => {
-                            adminDeleteComment({
-                              commentId: comment._id,
-                            });
-                          }}
-                        >
-                          <TrashIcon size="14" /> Delete
-                        </Button>
-                      )}
+                      <p className="font-sans whitespace-pre-line">
+                        {comment.text}
+                      </p>
                     </div>
                   </div>
+                </div>
+
+                <div className="flex flex-col gap-2 mt-4">
+                  {comment.userId === user?._id && (
+                    <Button
+                      className="flex gap-2"
+                      variant={"destructive"}
+                      size="sm"
+                      onClick={() => {
+                        deleteComment({
+                          commentId: comment._id,
+                        })
+                          .then(() => {
+                            toast({
+                              title: "Comment Deleted",
+                              description: "Your comment has been deleted",
+                              variant: "default",
+                            });
+                          })
+                          .catch(() => {
+                            toast({
+                              title: "Something happened",
+                              description: "We could not delete your comment",
+                              variant: "destructive",
+                            });
+                          });
+                      }}
+                    >
+                      <TrashIcon size="14" /> Delete
+                    </Button>
+                  )}
+                  {comment.userId !== user?._id && user?.isAdmin && (
+                    <Button
+                      className="flex gap-2"
+                      variant={"destructive"}
+                      size={"sm"}
+                      onClick={() => {
+                        adminDeleteComment({
+                          commentId: comment._id,
+                        });
+                      }}
+                    >
+                      <TrashIcon size="14" /> Delete
+                    </Button>
+                  )}
                 </div>
               </div>
             );
