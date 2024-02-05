@@ -19,6 +19,7 @@ import type * as constants from "../constants.js";
 import type * as files from "../files.js";
 import type * as follows from "../follows.js";
 import type * as http from "../http.js";
+import type * as notification from "../notification.js";
 import type * as stripe from "../stripe.js";
 import type * as thumbnails from "../thumbnails.js";
 import type * as users from "../users.js";
@@ -39,6 +40,7 @@ declare const fullApi: ApiFromModules<{
   files: typeof files;
   follows: typeof follows;
   http: typeof http;
+  notification: typeof notification;
   stripe: typeof stripe;
   thumbnails: typeof thumbnails;
   users: typeof users;

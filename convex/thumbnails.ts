@@ -1,5 +1,5 @@
 import { ConvexError, v } from "convex/values";
-import { action, internalMutation, query } from "./_generated/server";
+import { internalMutation, query } from "./_generated/server";
 import { paginationOptsValidator } from "convex/server";
 import { adminAuthMutation, authAction, authMutation, authQuery } from "./util";
 import { internal } from "./_generated/api";
@@ -28,6 +28,23 @@ export const createThumbnail = internalMutation({
       profileImage: user.profileImage,
       name: user.name,
     });
+
+    const following = await ctx.db
+      .query("follows")
+      .withIndex("by_targetUserId", (q) => q.eq("targetUserId", user._id))
+      .collect();
+
+    await Promise.all(
+      following.map(async (followingUser) => {
+        return await ctx.db.insert("notifications", {
+          userId: followingUser.userId,
+          from: user._id,
+          isRead: false,
+          thumbnailId: id,
+          type: "thumbnail",
+        });
+      })
+    );
 
     return id;
   },
@@ -86,6 +103,14 @@ export const addComment = authMutation({
       thumbnailId: args.thumbnailId,
       name: ctx.user.name ?? "Annoymous",
       profileUrl: ctx.user.profileImage ?? "",
+    });
+
+    await ctx.db.insert("notifications", {
+      from: ctx.user._id,
+      isRead: false,
+      thumbnailId: args.thumbnailId,
+      type: "comment",
+      userId: thumbnail.userId,
     });
   },
 });
@@ -171,6 +196,14 @@ export const voteOnThumbnail = authMutation({
     const voteIdx = thumbnail.images.findIndex((i) => i === args.imageId);
     thumbnail.votes[voteIdx]++;
     thumbnail.voteIds.push(ctx.user._id);
+
+    await ctx.db.insert("notifications", {
+      from: ctx.user._id,
+      isRead: false,
+      thumbnailId: args.thumbnailId,
+      type: "vote",
+      userId: thumbnail.userId,
+    });
 
     await ctx.db.patch(thumbnail._id, thumbnail);
   },

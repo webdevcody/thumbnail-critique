@@ -22,7 +22,9 @@ export default defineSchema({
   follows: defineTable({
     userId: v.id("users"),
     targetUserId: v.id("users"),
-  }).index("by_userId_targetUserId", ["userId", "targetUserId"]),
+  })
+    .index("by_userId_targetUserId", ["userId", "targetUserId"])
+    .index("by_targetUserId", ["targetUserId"]),
   users: defineTable({
     userId: v.string(),
     email: v.string(),
@@ -36,4 +38,15 @@ export default defineSchema({
   })
     .index("by_userId", ["userId"])
     .index("by_subscriptionId", ["subscriptionId"]),
+  notifications: defineTable({
+    userId: v.id("users"),
+    thumbnailId: v.id("thumbnails"),
+    isRead: v.boolean(),
+    type: v.union(
+      v.literal("thumbnail"),
+      v.literal("vote"),
+      v.literal("comment")
+    ),
+    from: v.id("users"),
+  }).index("by_userId", ["userId"]),
 });

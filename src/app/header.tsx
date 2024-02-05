@@ -6,6 +6,22 @@ import Link from "next/link";
 import { useSession } from "@/lib/utils";
 import MobileNav, { MenuToggle, useMobileNavState } from "./mobile-nav";
 import Image from "next/image";
+import { BellIcon } from "lucide-react";
+import { useQuery } from "convex/react";
+import { api } from "../../convex/_generated/api";
+
+const NotificationIcon = () => {
+  const hasUnread = useQuery(api.notification.hasUnread);
+
+  return (
+    <Link href="/notifications" className="relative">
+      <BellIcon />
+      {hasUnread && (
+        <div className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></div>
+      )}
+    </Link>
+  );
+};
 
 export function Header() {
   const { isLoading, isAuthenticated } = useSession();
@@ -52,11 +68,14 @@ export function Header() {
             </>
           )}
         </div>
+
         <div className="flex gap-4 items-center">
           {!isLoading && (
             <>
               {isAuthenticated && (
                 <>
+                  <NotificationIcon />
+
                   <UserButton />
                 </>
               )}
