@@ -48,7 +48,7 @@ export const generateAIComment = internalAction({
           content: [
             {
               type: "text",
-              text: `Describe which thumbnail looks the best and might provide the highest click through rate:`,
+              text: `Compare the following thumbnails and describe which one is the best:`,
             },
             ...(images as any),
           ],
