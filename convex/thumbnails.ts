@@ -105,13 +105,15 @@ export const addComment = authMutation({
       profileUrl: ctx.user.profileImage ?? "",
     });
 
-    await ctx.db.insert("notifications", {
-      from: ctx.user._id,
-      isRead: false,
-      thumbnailId: args.thumbnailId,
-      type: "comment",
-      userId: thumbnail.userId,
-    });
+    if (ctx.user._id !== thumbnail.userId) {
+      await ctx.db.insert("notifications", {
+        from: ctx.user._id,
+        isRead: false,
+        thumbnailId: args.thumbnailId,
+        type: "comment",
+        userId: thumbnail.userId,
+      });
+    }
   },
 });
 

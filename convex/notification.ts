@@ -51,7 +51,7 @@ export const getNotifications = authQuery({
         return {
           ...notification,
           thumbnail: await ctx.db.get(notification.thumbnailId),
-          profile: await getProfile(ctx, { userId: notification.userId }),
+          profile: await getProfile(ctx, { userId: notification.from }),
         };
       })
     );
