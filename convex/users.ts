@@ -1,21 +1,8 @@
 import { ConvexError, v } from "convex/values";
-import {
-  MutationCtx,
-  QueryCtx,
-  internalMutation,
-  internalQuery,
-  query,
-} from "./_generated/server";
+import { internalMutation, internalQuery, query } from "./_generated/server";
 import { authMutation, authQuery } from "./util";
 
 const FREE_CREDITS = 5;
-
-export const getUser = authQuery({
-  args: {},
-  handler: async (ctx, args) => {
-    return ctx.user;
-  },
-});
 
 export const getUserById = internalQuery({
   args: { userId: v.string() },
