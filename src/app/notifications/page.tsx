@@ -11,6 +11,7 @@ import { PictureInPictureIcon, SpeechIcon } from "lucide-react";
 import { Id } from "../../../convex/_generated/dataModel";
 import { ReactNode, useEffect } from "react";
 import { timeFrom } from "@/util/time-from";
+import { useRouter } from "next/navigation";
 
 function Notification({
   notification,
@@ -18,19 +19,14 @@ function Notification({
   description,
   icon,
 }: {
-  notification: {
-    _creationTime: number;
-    _id: Id<"notifications">;
-    from: Id<"users">;
-    thumbnailId: Id<"thumbnails">;
-    profile: {
-      name: string | undefined;
-    };
-  };
+  notification: (typeof api.notification.getNotifications._returnType)[0];
   title: string;
   description: string;
   icon: ReactNode;
 }) {
+  const markAsRead = useMutation(api.notification.markAsRead);
+  const router = useRouter();
+
   return (
     <div
       className="flex items-center gap-4 border p-4 rounded"
@@ -49,8 +45,19 @@ function Notification({
         </div>
       </div>
 
-      <Button asChild className="ml-auto">
-        <Link href={`/thumbnails/${notification.thumbnailId}`}>View</Link>
+      <Button
+        variant={notification.isRead ? "outline" : "default"}
+        className="ml-auto"
+        onClick={async () => {
+          if (!notification.isRead) {
+            await markAsRead({
+              notificationId: notification._id,
+            });
+          }
+          router.push(`/thumbnails/${notification.thumbnailId}`);
+        }}
+      >
+        {notification.isRead ? "View" : "Read"}
       </Button>
     </div>
   );
@@ -63,12 +70,6 @@ export default function NotificationsPage() {
     api.notification.getNotifications,
     !isAuthenticated ? "skip" : undefined
   );
-
-  const markAllRead = useMutation(api.notification.markAllRead);
-
-  useEffect(() => {
-    markAllRead();
-  }, [markAllRead]);
 
   return (
     <div className="">

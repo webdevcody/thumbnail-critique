@@ -1,22 +1,25 @@
+import { ConvexError, v } from "convex/values";
 import { getProfile } from "./users";
 import { authMutation, authQuery } from "./util";
 
-export const markAllRead = authMutation({
-  args: {},
-  handler: async (ctx) => {
-    const unreadNotifications = await ctx.db
-      .query("notifications")
-      .withIndex("by_userId", (q) => q.eq("userId", ctx.user._id))
-      .filter((q) => q.eq(q.field("isRead"), false))
-      .collect();
+export const markAsRead = authMutation({
+  args: { notificationId: v.id("notifications") },
+  handler: async (ctx, args) => {
+    const notification = await ctx.db.get(args.notificationId);
 
-    await Promise.all(
-      unreadNotifications.map(async (notification) => {
-        return await ctx.db.patch(notification._id, {
-          isRead: true,
-        });
-      })
-    );
+    if (!notification) {
+      throw new ConvexError("notification not found");
+    }
+
+    if (notification.userId !== ctx.user._id) {
+      throw new ConvexError("not access to read notification");
+    }
+
+    notification.isRead = true;
+
+    await ctx.db.patch(notification._id, {
+      isRead: true,
+    });
   },
 });
 
