@@ -50,7 +50,7 @@ function Notification({
         className="ml-auto"
         onClick={async () => {
           if (!notification.isRead) {
-            await markAsRead({
+            markAsRead({
               notificationId: notification._id,
             });
           }
