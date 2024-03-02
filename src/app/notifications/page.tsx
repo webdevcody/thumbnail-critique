@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { useSession } from "@/lib/utils";
 import Link from "next/link";
-import { SkeletonCard } from "@/components/skeleton-card";
 import {
   MessageSquareIcon,
   PictureInPictureIcon,
@@ -17,9 +16,9 @@ import { ReactNode, useState } from "react";
 import { timeFrom } from "@/util/time-from";
 import { useRouter } from "next/navigation";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 
-export function SkeletonNotifications() {
+function SkeletonNotifications() {
   return (
     <Card>
       <div className="p-6 pb-4">
