@@ -14,6 +14,7 @@ import { useRouter } from "next/navigation";
 import { cn, getImageUrl } from "@/lib/utils";
 import { UpgradeButton } from "@/components/upgrade-button";
 import { Id } from "../../../convex/_generated/dataModel";
+import { TrashIcon, XIcon } from "lucide-react";
 
 const defaultErrorState = {
   title: "",
@@ -112,8 +113,18 @@ export default function CreatePage() {
         <div className="grid grid-cols-3 gap-8 mb-8">
           {images.map((imageUrl, idx) => {
             return (
-              <div key={imageUrl} className="flex flex-col">
+              <div key={imageUrl} className="flex flex-col relative">
                 <div>Image {idx + 1}</div>
+                <Button
+                  size={"sm"}
+                  variant="destructive"
+                  className="absolute top-0 right-0 z-10"
+                  onClick={() => {
+                    setImages((imgs) => imgs.filter((img) => img !== imageUrl));
+                  }}
+                >
+                  <XIcon className="w-4 h-4 mr-1" />
+                </Button>
                 <div className="relative aspect-[1280/720]">
                   <Image
                     alt="image test image"
@@ -128,7 +139,7 @@ export default function CreatePage() {
 
           <div className="flex flex-col gap-4 mb-8">
             <Label htmlFor="title">
-              {images.length > 0 && "Another"} Thumbnail Image
+              {images.length > 0 && "Another"} Thumbnail Images
             </Label>
             <UploadButton
               className={(combinedState) => {
@@ -136,14 +147,19 @@ export default function CreatePage() {
               }}
               content={(progress) =>
                 progress === null || progress === 0
-                  ? `Choose File`
+                  ? `Choose File(s)`
                   : "Uploading..."
               }
               uploadUrl={generateUploadUrl}
               fileTypes={["image/*"]}
+              multiple
               onUploadComplete={async (uploaded: UploadFileResponse[]) => {
-                const storageId = (uploaded[0].response as any).storageId;
-                setImages((imgs) => [...imgs, storageId]);
+                setImages((imgs) => [
+                  ...imgs,
+                  ...uploaded.map((file) => {
+                    return (file.response as any).storageId as Id<"_storage">;
+                  }),
+                ]);
               }}
               onUploadError={(error: unknown) => {
                 alert(`ERROR! ${error}`);
