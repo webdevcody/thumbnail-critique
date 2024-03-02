@@ -7,11 +7,29 @@ import Image from "next/image";
 import { useSession } from "@/lib/utils";
 import Link from "next/link";
 import { SkeletonCard } from "@/components/skeleton-card";
-import { PictureInPictureIcon, SpeechIcon } from "lucide-react";
-import { Id } from "../../../convex/_generated/dataModel";
-import { ReactNode, useEffect } from "react";
+import {
+  MessageSquareIcon,
+  PictureInPictureIcon,
+  SpeechIcon,
+  VoteIcon,
+} from "lucide-react";
+import { ReactNode, useState } from "react";
 import { timeFrom } from "@/util/time-from";
 import { useRouter } from "next/navigation";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+
+export function SkeletonNotifications() {
+  return (
+    <Card>
+      <div className="p-6 pb-4">
+        <div className="h-4 bg-gray-200 rounded dark:bg-gray-700 mb-2.5"></div>
+        <div className="h-4 bg-gray-200 rounded dark:bg-gray-700 mb-2.5"></div>
+        <div className="h-4 bg-gray-200 rounded dark:bg-gray-700 mb-2.5"></div>
+      </div>
+    </Card>
+  );
+}
 
 function Notification({
   notification,
@@ -66,38 +84,45 @@ function Notification({
 export default function NotificationsPage() {
   const { isAuthenticated } = useSession();
 
+  const [filter, setFilter] = useState<"vote" | "thumbnail" | "comment">(
+    "vote"
+  );
+
   const notifications = useQuery(
     api.notification.getNotifications,
     !isAuthenticated ? "skip" : undefined
+  );
+
+  const filteredNotifications = notifications?.filter(
+    (notification) => notification.type === filter
   );
 
   return (
     <div className="">
       <h1 className="text-center text-4xl font-bold mb-12">Notifications</h1>
 
-      {notifications === undefined && (
-        <div className="animate-pulse mb-12 mt-12 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-          <SkeletonCard />
-          <SkeletonCard />
-          <SkeletonCard />
-        </div>
-      )}
-
-      {notifications && notifications.length === 0 && (
-        <div className="flex flex-col items-center gap-8">
-          <Image
-            className="rounded-lg bg-white p-12"
-            src="/void.svg"
-            alt="no found icon"
-            width="400"
-            height="400"
-          />
-          <div className="text-2xl font-bold">You have no notifications</div>
-        </div>
-      )}
-
       <div className="flex flex-col gap-8 max-w-xl mx-auto">
-        {notifications?.map((notification) => {
+        <Tabs
+          defaultValue="votes"
+          className="mx-auto"
+          onValueChange={(value) => {
+            setFilter(value as any);
+          }}
+        >
+          <TabsList>
+            <TabsTrigger value="vote" className="flex gap-2">
+              <VoteIcon /> Votes
+            </TabsTrigger>
+            <TabsTrigger value="thumbnail" className="flex gap-2">
+              <PictureInPictureIcon /> Thumbnails
+            </TabsTrigger>
+            <TabsTrigger value="comment" className="flex gap-2">
+              <MessageSquareIcon /> Comments
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
+
+        {filteredNotifications?.map((notification) => {
           if (notification.type === "thumbnail") {
             return (
               <Notification
@@ -130,6 +155,27 @@ export default function NotificationsPage() {
             );
           }
         })}
+
+        {notifications === undefined && (
+          <div className="animate-pulse flex flex-col gap-8">
+            <SkeletonNotifications />
+            <SkeletonNotifications />
+            <SkeletonNotifications />
+          </div>
+        )}
+
+        {filteredNotifications && filteredNotifications.length === 0 && (
+          <div className="flex flex-col items-center gap-8">
+            <Image
+              className="rounded-lg bg-white p-12"
+              src="/void.svg"
+              alt="no found icon"
+              width="400"
+              height="400"
+            />
+            <div className="text-2xl font-bold">You have no notifications</div>
+          </div>
+        )}
       </div>
     </div>
   );
