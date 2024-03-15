@@ -20,6 +20,10 @@ export default {
           NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY:
             process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,
           CLERK_SECRET_KEY: process.env.CLERK_SECRET_KEY,
+          NEXT_PUBLIC_PLANNER_AI_FEEDBACK_URL:
+            process.env.NEXT_PUBLIC_PLANNER_AI_FEEDBACK_URL,
+          NEXT_PUBLIC_PLANNER_AI_PROJECT_ID:
+            process.env.NEXT_PUBLIC_PLANNER_AI_PROJECT_ID,
         } as any,
       });
 

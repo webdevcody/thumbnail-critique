@@ -6,9 +6,10 @@ import Link from "next/link";
 import { useSession } from "@/lib/utils";
 import MobileNav, { MenuToggle, useMobileNavState } from "./mobile-nav";
 import Image from "next/image";
-import { BellIcon } from "lucide-react";
+import { BellIcon, MessageCircleHeart } from "lucide-react";
 import { useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
+import Feedback from "./feedback";
 
 const NotificationIcon = () => {
   const hasUnread = useQuery(api.notification.hasUnread);
@@ -44,7 +45,9 @@ export function Header() {
             width="40"
             height="40"
           />
-          <span className="text-xs md:text-base">ThumbnailCritique</span>
+          <span className="text-xs md:text-base hidden sm:block">
+            ThumbnailCritique
+          </span>
         </Link>
 
         <div className="gap-4 hidden md:flex md:gap-8 text-xs md:text-base">
@@ -74,6 +77,14 @@ export function Header() {
             <>
               {isAuthenticated && (
                 <>
+                  <Feedback
+                    triggerContent={
+                      <button>
+                        <MessageCircleHeart />
+                      </button>
+                    }
+                  />
+
                   <NotificationIcon />
 
                   <UserButton />
