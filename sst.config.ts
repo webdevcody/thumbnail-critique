@@ -21,7 +21,6 @@ export default {
           cloudWatchMetricsEnabled: true,
           sampledRequestsEnabled: true,
         },
-        name: "MyCDKWebAcl",
         rules: [
           {
             name: "LimitRequests",
