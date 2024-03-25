@@ -10,7 +10,7 @@ import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import { getImageUrl, useSession } from "@/lib/utils";
+import { useSession } from "@/lib/utils";
 import Link from "next/link";
 import { formatDistance } from "date-fns";
 import { SkeletonCard } from "@/components/skeleton-card";
@@ -62,12 +62,14 @@ export default function DashboardPage() {
             <Card key={thumbnail._id}>
               <CardHeader>
                 <div className="relative aspect-[1280/720]">
-                  <Image
-                    alt="image test"
-                    className="object-cover"
-                    src={getImageUrl(thumbnail.images[0])}
-                    layout="fill"
-                  />
+                  {thumbnail.urls[0] && (
+                    <Image
+                      alt="image test"
+                      className="object-cover"
+                      src={thumbnail.urls[0]}
+                      layout="fill"
+                    />
+                  )}
                 </div>
               </CardHeader>
               <CardContent>

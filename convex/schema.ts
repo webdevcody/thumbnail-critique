@@ -5,7 +5,7 @@ export default defineSchema({
   thumbnails: defineTable({
     title: v.string(),
     userId: v.id("users"),
-    images: v.array(v.string()),
+    images: v.array(v.id("_storage")),
     votes: v.array(v.number()),
     voteIds: v.array(v.id("users")),
     profileImage: v.optional(v.string()),

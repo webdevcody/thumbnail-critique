@@ -5,7 +5,6 @@ import { useParams } from "next/navigation";
 import { api } from "../../../../convex/_generated/api";
 import { Doc, Id } from "../../../../convex/_generated/dataModel";
 import Image from "next/image";
-import { getImageUrl } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useSession } from "@clerk/nextjs";
 import { Progress } from "@/components/ui/progress";
@@ -38,13 +37,15 @@ function getVotePercent(thumbnail: Doc<"thumbnails">, imageId: string) {
 }
 
 function ThumbnailTestImage({
+  imageUrl,
   imageId,
   thumbnail,
   hasVoted,
 }: {
-  imageId: string;
+  imageUrl: string;
   thumbnail: Doc<"thumbnails">;
   hasVoted: boolean;
+  imageId: Id<"_storage">;
 }) {
   const voteOnThumbnail = useMutation(api.thumbnails.voteOnThumbnail);
 
@@ -54,7 +55,7 @@ function ThumbnailTestImage({
         <Image
           alt="image test"
           className="object-cover"
-          src={getImageUrl(imageId)}
+          src={imageUrl}
           layout="fill"
         />
       </div>
@@ -184,14 +185,17 @@ export default function ThumbnailPage() {
 
           <TabsContent value="grid">
             <div className="mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {thumbnail.images.map((imageId) => {
+              {thumbnail.urls.map((imageUrl, idx) => {
                 return (
-                  <ThumbnailTestImage
-                    key={imageId}
-                    hasVoted={hasVoted}
-                    imageId={imageId}
-                    thumbnail={thumbnail}
-                  />
+                  imageUrl && (
+                    <ThumbnailTestImage
+                      key={imageUrl}
+                      imageId={thumbnail.images[idx]}
+                      hasVoted={hasVoted}
+                      imageUrl={imageUrl}
+                      thumbnail={thumbnail}
+                    />
+                  )
                 );
               })}
             </div>
@@ -200,8 +204,9 @@ export default function ThumbnailPage() {
           <TabsContent value="gallery">
             <div className="max-w-2xl mx-auto flex flex-col gap-4">
               <ThumbnailTestImage
+                imageId={thumbnail.images[currentImageIndex]!}
                 hasVoted={hasVoted}
-                imageId={thumbnail.images[currentImageIndex]}
+                imageUrl={thumbnail.urls[currentImageIndex]!}
                 thumbnail={thumbnail}
               />
 

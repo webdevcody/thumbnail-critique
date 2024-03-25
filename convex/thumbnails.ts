@@ -1,15 +1,15 @@
 import { ConvexError, v } from "convex/values";
-import { internalMutation, query } from "./_generated/server";
+import { QueryCtx, internalMutation, query } from "./_generated/server";
 import { paginationOptsValidator } from "convex/server";
 import { adminAuthMutation, authAction, authMutation, authQuery } from "./util";
 import { internal } from "./_generated/api";
-import { Id } from "./_generated/dataModel";
+import { Doc, Id } from "./_generated/dataModel";
 import { AI_PROFILE_NAME } from "./constants";
 
 export const createThumbnail = internalMutation({
   args: {
     title: v.string(),
-    images: v.array(v.string()),
+    images: v.array(v.id("_storage")),
     userId: v.id("users"),
   },
   handler: async (ctx, args) => {
@@ -144,17 +144,40 @@ export const addCommentInternal = internalMutation({
 export const getThumbnail = query({
   args: { thumbnailId: v.id("thumbnails") },
   handler: async (ctx, args) => {
-    return await ctx.db.get(args.thumbnailId);
+    const thumbnail = await ctx.db.get(args.thumbnailId);
+    if (!thumbnail) {
+      throw new ConvexError("Thumbnail not found");
+    }
+    return await attachUrlToThumbnail(ctx, thumbnail);
   },
 });
+
+async function attachUrlToThumbnail(
+  ctx: QueryCtx,
+  thumbnail: Doc<"thumbnails">
+) {
+  return {
+    ...thumbnail,
+    urls: await Promise.all(
+      thumbnail.images.map((image) => ctx.storage.getUrl(image))
+    ),
+  };
+}
 
 export const getRecentThumbnails = query({
   args: { paginationOpts: paginationOptsValidator },
   handler: async (ctx, args) => {
-    return await ctx.db
+    const thumbnails = await ctx.db
       .query("thumbnails")
       .order("desc")
       .paginate(args.paginationOpts);
+
+    return {
+      ...thumbnails,
+      page: await Promise.all(
+        thumbnails.page.map((thumbnail) => attachUrlToThumbnail(ctx, thumbnail))
+      ),
+    };
   },
 });
 
@@ -162,20 +185,28 @@ export const getMyThumbnails = authQuery({
   args: {},
   handler: async (ctx, args) => {
     if (!ctx.user) return [];
-    return await ctx.db
+    const thumbnails = await ctx.db
       .query("thumbnails")
       .filter((q) => q.eq(q.field("userId"), ctx.user._id))
       .collect();
+
+    return await Promise.all(
+      thumbnails.map((thumbnail) => attachUrlToThumbnail(ctx, thumbnail))
+    );
   },
 });
 
 export const getThumbnailsForUser = query({
   args: { userId: v.string() },
   handler: async (ctx, args) => {
-    return await ctx.db
+    const thumbnails = await ctx.db
       .query("thumbnails")
       .filter((q) => q.eq(q.field("userId"), args.userId))
       .collect();
+
+    return await Promise.all(
+      thumbnails.map((thumbnail) => attachUrlToThumbnail(ctx, thumbnail))
+    );
   },
 });
 

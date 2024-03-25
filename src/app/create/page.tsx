@@ -1,6 +1,6 @@
 "use client";
 
-import { useAction, useMutation } from "convex/react";
+import { useAction, useMutation, useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { UploadButton, UploadFileResponse } from "@xixixao/uploadstuff/react";
 import { useState } from "react";
@@ -11,15 +11,30 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import clsx from "clsx";
 import { useRouter } from "next/navigation";
-import { cn, getImageUrl } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { UpgradeButton } from "@/components/upgrade-button";
 import { Id } from "../../../convex/_generated/dataModel";
-import { TrashIcon, XIcon } from "lucide-react";
+import { XIcon } from "lucide-react";
 
 const defaultErrorState = {
   title: "",
   images: "",
 };
+
+function ConvexImage({ imageId }: { imageId: Id<"_storage"> }) {
+  const imageUrl = useQuery(api.files.getImageUrl, { imageId });
+
+  return (
+    imageUrl && (
+      <Image
+        alt="image test image"
+        className="object-cover"
+        src={imageUrl}
+        layout="fill"
+      />
+    )
+  );
+}
 
 export default function CreatePage() {
   const generateUploadUrl = useMutation(api.files.generateUploadUrl);
@@ -126,12 +141,7 @@ export default function CreatePage() {
                   <XIcon className="w-4 h-4 mr-1" />
                 </Button>
                 <div className="relative aspect-[1280/720]">
-                  <Image
-                    alt="image test image"
-                    className="object-cover"
-                    src={getImageUrl(imageUrl)}
-                    layout="fill"
-                  />
+                  <ConvexImage imageId={imageUrl} />
                 </div>
               </div>
             );
