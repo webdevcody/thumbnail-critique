@@ -102,20 +102,17 @@ export function FeedbackForm({ setOpen }: FeedbackFormProps) {
   const { toast } = useToast();
   const onSubmit = async (values: z.infer<typeof feedbackSchema>) => {
     try {
-      await fetch(
-        `${process.env.NEXT_PUBLIC_PLANNER_AI_FEEDBACK_URL}/api/v1/feedback`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            name: values.name,
-            feedback: values.feedback,
-            projectId: process.env.NEXT_PUBLIC_PLANNER_AI_PROJECT_ID,
-          }),
-        }
-      );
+      await fetch("https://projectplannerai.com/api/feedback", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: values.name,
+          feedback: values.feedback,
+          projectId: "j57d044v015vej9e6nvwahkgen6n844n",
+        }),
+      });
       setOpen(false);
       toast({
         title: "Feedback submitted",
