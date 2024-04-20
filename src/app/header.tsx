@@ -68,6 +68,9 @@ export function Header() {
               <Link href="/account" className="link">
                 Account
               </Link>
+              <Link href="/changelog" className="link">
+                Changelog
+              </Link>
             </>
           )}
         </div>

@@ -13,6 +13,15 @@ const nextConfig = {
       },
     ],
   },
+  async rewrites() {
+    return [
+      {
+        source: "/changelog",
+        destination:
+          "https://projectplannerai.com/changelog/bf1599a8807019b25000d8c1",
+      },
+    ];
+  },
 };
 
 module.exports = nextConfig;
