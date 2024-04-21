@@ -20,11 +20,6 @@ const nextConfig = {
         destination:
           "https://projectplannerai.com/changelog/bf1599a8807019b25000d8c1",
       },
-      {
-        source: "/changelog/:path*",
-        destination:
-          "https://projectplannerai.com/changelog/bf1599a8807019b25000d8c1/:path*",
-      },
     ];
   },
 };
