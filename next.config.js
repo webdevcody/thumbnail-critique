@@ -18,7 +18,7 @@ const nextConfig = {
       {
         source: "/changelog",
         destination:
-          "https://projectplannerai.com/changelog/bf1599a8807019b25000d8c1",
+          "https://projectplannerai.com/changelog/j57crafbck4rdrfsp64ydym2tx6j2b83",
       },
     ];
   },
