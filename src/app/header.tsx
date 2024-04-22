@@ -68,11 +68,12 @@ export function Header() {
               <Link href="/account" className="link">
                 Account
               </Link>
-              <Link href="/changelog" className="link">
-                Changelog
-              </Link>
             </>
           )}
+
+          <Link href="/changelog" className="link">
+            Changelog
+          </Link>
         </div>
 
         <div className="flex gap-4 items-center">
