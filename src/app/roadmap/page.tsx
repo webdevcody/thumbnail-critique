@@ -17,8 +17,6 @@ export default async function RoadmapPage() {
     `https://projectplannerai.com/api/roadmap?projectId=j57crafbck4rdrfsp64ydym2tx6j2b83`
   ).then(async (res) => res.json() as Promise<Roadmap[]>);
 
-  console.log({ roadmapItems });
-
   return (
     <div className="container max-w-5xl mx-auto">
       <div className="flex flex-row justify-between mb-8">
