@@ -74,6 +74,10 @@ export function Header() {
           <Link href="/changelog" className="link">
             Changelog
           </Link>
+
+          <Link href="/roadmap" className="link">
+            Roadmap
+          </Link>
         </div>
 
         <div className="flex gap-4 items-center">
